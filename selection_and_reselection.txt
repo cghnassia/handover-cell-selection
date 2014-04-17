@@ -1,0 +1,146 @@
+/*Algorithme de selection */
+
+function selectionUMTS
+	input
+		int frequence	//fréquence porteuse de l'UMTS
+	output
+		Cell selectedCell	//cellule sélectionnée
+	body
+		candidateCell = null
+		do {
+			candidateCell = getUMTSCells(frequence)	// we found a potential cell
+			if((candidateCell != null || (candidateCell.strength >= candidateCell.minimumSelectionStrength)) && (! candidateCell.isBarred)) {
+				//we are allowed to use this cell
+				selectedCell = candidateCell
+			}
+		}
+		while (candidateCell != null)
+	end body
+end function
+
+function selectionGSM
+	input
+		int frequence 	//fréquence porteuse de GSM
+	output
+		Cell selectedCell	//cellule séléctionnée
+	body
+		List<Cell> candidateCells = ()
+		Cell tmpCell
+		do {
+			tmpCell = getUMTSCells(frequence)	//we found a potential cell
+			if((tmpCell != null || (tmpCell.strength >= tmpCell.minimumSelectionStrength)) && (! tmpCell.isBarred)) {
+				//this is a validCell
+				candidateCells.add(tmpCell)
+			}
+		}
+		while (tmpCell != null)
+
+		//now we find the best cell
+		if(candidateCells.length > 0) {
+			Cell tmpCell
+			for tmpCell in candidateCells() {
+				if(selectedCell == null || tmpCell.strength > selectedCell.strength) {
+					selectedCell = tmpCell
+				}
+			}
+		}
+	end body
+end function
+
+function reselectionUMTS
+	input
+		List<Cell> neighborCells	//list of UMTS neighbor cells to check; list was given by currently selected cell
+		selectedCell				//cell that is currently selected
+	output
+		selectedCell				//new selectedCell
+	body
+		//first we get the best neighbor cell
+		candidateCell = null
+		if(neighborCells.length > 0) {
+			Cell tmpCell
+			for tmpCell in neighborCells() {
+				if((candidateCell == null || (tmpCell.strength > candidateCell.strength)) && (! tmpCell.isBarred)) {
+					candidateCell = tmpCell
+				}
+			}
+		}
+
+		//now we check if we need to reselect or not
+		if(candidate != null && (candidateCell.strength > candidateCell.minimumReselectionStrength)) {
+			//if we are currenlty in GSM
+			if(selectedCell.type == 'GSM') {
+				selectedCell = candidateCell
+			}
+			else {	//selectedCell.type = 'UTMS'
+				if(candidateCell.strength - selectedCell.strength > candidateCell.deltaReselection) {
+					selectedCell = candidateCell
+				}
+			}
+		}
+	end body
+end functon
+
+function reselectionGSM
+	input
+		List<Cell> neighborCells 	//list of GSM neighbor cells to check; list was given by currenlty selected cell
+		selectedCell				//cell that is currently selected
+	output
+		selectedCell				//new selectedCell
+	body
+		//first we ge best neighbor cell
+		candidateCell = null
+		if(neighborCells.length > 0) {
+			Cell tmpCell
+			for tmpCell in neighborCells() {
+				if((candidateCell == null || (tmpCell.strength > candidateCell.strength)) && (! tmpCell.isBarred)) {
+					candidateCell = tmpCell
+				}
+			}
+		}
+
+		//now we check if we need to reselect or not
+		if(candidate != null && (candidateCell.strength > candidateCell.minimumReselectionStrength)) {
+			if(selectedCell.type == 'GSM') {
+				if(candidateCell.strength - selectedCell.strength > candidateCell.deltaReselection) {
+					selectedCell = candidateCell
+				}
+			}
+			else {  //selectedCell.type = 'UTMS'
+				//if the strength of the current UMTS cell is below a defined threshold and the strength of candidate GSM cell is aboce defined threshold
+				if((selectedCell.strength - selectedCell.minimumStrength < selectedCell.deltaReselectionToGSM) &&  (candidateCell.strength - candidateCell.minimumStrength > candidateCell.deltaReselectionFromUMTS) {
+					selectedCell = candidtateCell
+				}
+			}
+		}
+	end body
+end function
+
+
+//main function of the mobile
+function mobile
+	body
+		while(true) {
+			//we are not calling; we use selection/reselection
+			if(! this.isCalling) {
+				//we are not connected; we try to select
+				if(this.selectedCell == null) {
+					this.selectedCell = reselectionUMTS(this.frequencyUMTS)
+					if(this.selectedCell == null) {
+						this.selectedCell = reselectionGSM(this.frequencyGSM)
+					}
+				}
+				else {	//we are already connected; let's use reselection
+					reselectedCell = reselectionUMTS(this.selectedCell, this.frequencyUMTS)
+					//if we indeed did reselection, so no need to try reselection towards GSM (optimization)
+					if(reselectedCell == this.selectedCell) {
+						this.selectedCell = reselectionGSM(this.selectedCell, this.frequencyGSM)
+					}
+					else {
+						this.selectedCell = reselectedCell
+					}
+				}
+			}
+			sleep(500) //wait for 0.5 seconds
+		}
+	body
+end function 
