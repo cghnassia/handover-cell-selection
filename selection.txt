@@ -1,0 +1,108 @@
+/*Algorithme de selection */
+
+function selectionUMTS
+	input
+		List<Cell> candidate_set
+	output
+		Cell selected
+	body
+		for cell in candidate_set do
+			if cell.strength >= cell.minimum_strength && ! candidateCcellell.is_barred then
+				selected <- cell
+				//candidate_set.remove(cell)
+				break
+			end if
+		end do
+	end body
+end function
+
+function selectionGSM
+	input
+		List<Cell> candidate_set
+	output
+		Cell selected
+	body
+		candidate_set.sort('desc')
+		for cell in candidate_set do
+			if cell.strength >= cell.minimum_strength && ! cell.is_barred then
+				selectedCell <- cell
+				//candidate_set.remove(cell)
+		end do
+	end body
+end function
+
+
+function reselectionUMTS
+	input
+		Cell selected	
+		List<Cell> candidate_set
+		hysteresis			
+	output
+		Cell selected
+	body
+		candidate_set.sort('desc')
+		for cell in candidate_set do
+			if ! cell.is_barred then
+				if selected.type equals 'GSM' then
+					if cell.strength > cell.minimum_strength then
+						selected <- cell
+					end if
+				else	// selected.type equals 'UMTS'
+					if cell.strength > cell.minimum_strength && cell.strength - selected.strength > hysteresis then
+						selected <- cell
+					end if
+				end if
+				break
+			end if
+		end do
+	end body
+end function
+
+//we assume that entering to this function means that there is no UMTS cell available
+function reselectionGSM
+	input
+		Cell selected	
+		List<Cell> candidate_set
+		hysteresis			
+	output
+		Cell selected
+	body
+		candidate_set.sort('desc')
+		for cell in candidate_set do
+			if ! cell.is_barred then
+				if selected.type equals 'GSM' then
+					if cell.strength > cell.minimum_strength && cell.strength - selected.strength > hysteresis then
+						selected <- cell
+					end if
+				else	// selected.type equals 'UMTS'
+					if cell.strength > cell.minimum_strength
+						selected <- cell
+					end if
+				end if
+			end if
+		end do
+	end body
+end function
+
+//main function for selection/reselection
+function selection_reselection
+	input
+		selected
+		candidate_umts_set
+		candidate_gsm_set
+		hysteresis_gsm
+		hysteresis_umts
+	body
+		if selected is null then
+			selected <- selectionUMTS(candidate_umts_set)
+			if selected is null then
+				selected <- selectionGSM(candidate_gsm_set)
+			end if
+		else
+			reselectionUMTS(selected, candidate_umts_set, hysteresis_umts)
+			if selected.type equals 'GSM' || selected.strength < selected.minimum_strength then
+				reselectionGSM(selected, candidate_gsm_set, hysteresis_gsm)
+			end if
+		end if
+	end body
+end function 

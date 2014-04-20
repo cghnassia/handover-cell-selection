@@ -1,0 +1,98 @@
+/*Algorithmes de handover */
+
+function handoverUMTS
+	input
+		List<Cell> active_set 	
+		List<Cell> neighbor_set
+		hysteresis
+	output
+		List<Cell> active_set
+		List<Cell> neighbor_set
+	body
+		maxActive <- max(active_set)								//we first get the best cell inside the active set
+		for cell in active_set do
+			if maxActive.strength - cell.strength > hysteresis then
+				active_set.remove(cell)
+				neighbor_cell.add(cell)
+			end if
+		end do
+
+		neighbor_set.sort('desc')
+		for cell in neighbor_set do
+			if active_set.length < active_maxlength then
+				maxActive <- max(active_set)
+				if cell.strength - maxActive.strength > hysteresis then
+					neighbor_cell.remove(cell)
+					active_set.add(cell)
+				else
+					break
+				end if
+			else
+				minActive <- min(active_set)
+				maxNeighbor <- max(active_set)
+				if maxNeighbor.strength - minActive.strength > hysteresis then
+					active_set.replace(minActive, maxNeighbor)
+					neighbor_set.replace(maxNeighbor, min Active)
+				else
+					break
+				end if
+			end if
+		end do
+	end body
+end function
+
+function handoverGSM
+	input
+		Cell primary
+		List<Cell> neighbor_set
+		hysteresis
+	output
+		Cell primary
+		List<Cell> neighbor_set
+	body
+		maxNeighbor <- max(neighbor_set)
+		if maxNeighbor.strength - primary.strength > hysteresis then
+			neighbor_set.repace(maxNeighbor, primary)
+			primary <- maxNeighbor
+		end if
+	end body
+end function
+
+//main function for handover
+function handover
+	input
+		Cell primary_gsm
+		List<Cell> active_set_umts
+		List<Cell> neighbor_set_umts
+		List<Cell> neighbor_set_gsm
+		hysteresis_soft				//hysteresis for UMTS
+		hysteresis_hard				//hysteresis for GSM
+	output
+		Cell primary
+		List<Cell> neighbor_set_umts
+		List<Cell> neighbor_set_gsm
+	body
+		if neighbor_set_umts is not null then
+			handoverUMTS(active_umts_set, neighbor_umts_set, hysteresis_soft)
+			if active_set is null then
+				handoverGSM(primary_gsm, neighbor_gsm_set, hysteresis_hard)
+			else
+				primary_gsm <- null
+			end if
+		end if
+	end body
+end function
+
+//main function
+function mobile
+	input
+		boolean is_calling
+	body
+		if is_calling then
+			handover()
+		else
+			selection_reselection()
+		end if
+	end body
+end function
+
