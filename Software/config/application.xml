@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<Application>	
+	<Areas>
+		<Area id="1" color="#0000FF">
+			<Antenna id="10" x="3000" y="3000">
+				<Cell id="1" type="GSM" power="20" frequency="900" group="1">
+					<Neighbors>
+						<Neighbor cell="3" />
+						<Neighbor cell="5" />
+						<Neighbor cell="7" />
+						<Neighbor cell="9" />
+						<Neighbor cell="11" />
+						<Neighbor cell="13" />
+					</Neighbors>
+				</Cell>
+				<Cell id="2" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+			
+			<Antenna id="11" x="4000" y="1268">
+				<Cell id="3" type="GSM" power="20" frequency="900" group="2"/>
+				<Cell id="4" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="12" x="5000" y="3000">
+				<Cell id="5" type="GSM" power="20" frequency="900" group="3"/>
+				<Cell id="6" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="13" x="4000" y="4732">
+				<Cell id="7" type="GSM" power="20" frequency="900" group="4"/>
+				<Cell id="8" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="14" x="2000" y="4732">
+				<Cell id="9" type="GSM" power="20" frequency="900" group="5"/>
+				<Cell id="10" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="15" x="1000" y="3000">
+				<Cell id="11" type="GSM" power="20" frequency="900" group="6"/>
+				<Cell id="12" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="16" x="2000" y="1268">
+				<Cell id="13" type="GSM" power="20" frequency="900" group="7"/>
+				<Cell id="14" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+		</Area>
+
+		<Area id="2" color="#00FF00">
+			<Antenna id="20" x="8000" y="4732">
+				<Cell id="15" type="GSM" power="20" frequency="900" group="8"/>
+				<Cell id="16" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+			
+			<Antenna id="21" x="9000" y="3000">
+				<Cell id="17" type="GSM" power="20" frequency="900" group="9"/>
+				<Cell id="18" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="22" x="10000" y="4732">
+				<Cell id="19" type="GSM" power="20" frequency="900" group="10"/>
+				<Cell id="20" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="23" x="9000" y="6464">
+				<Cell id="21" type="GSM" power="20" frequency="900" group="11"/>
+				<Cell tid="22" ype="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="24" x="7000" y="6464">
+				<Cell id="23" type="GSM" power="20" frequency="900" group="12"/>
+				<Cell id="24" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="25" x="6000" y="4732">
+				<Cell id="25" type="GSM" power="20" frequency="900" group="13"/>
+				<Cell id="26" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="26" x="7000" y="3000">
+				<Cell id="27" type="GSM" power="20" frequency="900" group="14"/>
+				<Cell id="28" type="UMTS" power="10" frequency="2100"/>
+			</Antenna>
+		</Area>
+	</Areas>
+</Application>
