@@ -74,6 +74,11 @@ public class MenuView extends JPanel {
 		this.getMenuPhoneView().getCheckBoxUMTS().addItemListener(new CheckBoxNetworkListener());
 	}
 	
+	public void updateSpeed(int value) {
+		this.getMenuPhoneView().getSliderSpeed().setValue(value);
+		this.getMenuPhoneView().getLabelSpeed().setText(value + " m/s");
+	}
+	
 	protected void fireControlCheckBoxEvent(MenuControlEvent controlEvent) {
 		
 		Object[] listeners = this.listenerList.getListenerList();

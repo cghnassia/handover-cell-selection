@@ -5,6 +5,7 @@ import events.MenuDataEvent;
 import events.MenuListener;
 import models.application.ApplicationModel;
 import models.menu.MenuModel;
+import models.mobile.Mobile;
 import views.application.ApplicationView;
 import views.menu.MenuView;
 
@@ -23,8 +24,9 @@ public class MenuController {
 			
 			@Override
 			public void sliderChanged(MenuDataEvent e) {
-				System.out.print("slider changed");
 				
+				MenuController.this.getMenuView().updateSpeed(e.getValue());
+				Mobile.Instance().setSpeed(e.getValue());
 			}
 			
 			@Override

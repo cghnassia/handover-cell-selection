@@ -7,9 +7,8 @@ function selectionUMTS
 		Cell selected
 	body
 		for cell in candidate_set do
-			if cell.strength >= cell.minimum_strength && ! candidateCcellell.is_barred then
+			if cell.strength >= cell.minimum_strength && ! cell.is_barred then
 				selected <- cell
-				//candidate_set.remove(cell)
 				break
 			end if
 		end do
@@ -26,7 +25,7 @@ function selectionGSM
 		for cell in candidate_set do
 			if cell.strength >= cell.minimum_strength && ! cell.is_barred then
 				selectedCell <- cell
-				//candidate_set.remove(cell)
+			end if
 		end do
 	end body
 end function

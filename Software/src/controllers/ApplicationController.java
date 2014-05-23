@@ -5,6 +5,7 @@ import java.awt.event.ComponentListener;
 
 import views.application.ApplicationView;
 import models.application.ApplicationModel;
+import models.mobile.Mobile;
 
 
 public class ApplicationController  {
@@ -18,7 +19,7 @@ public class ApplicationController  {
 		
 		this.setApplicationModel(applicationModel);
 		this.setApplicationView(applicationView);
-		
+	
 		this.setListeners();
 		
 		/*this.applicationModel = new ApplicationModel();

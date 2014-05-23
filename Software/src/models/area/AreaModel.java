@@ -9,10 +9,12 @@ public class AreaModel {
 	
 	private static AreaModel areaModel;
 	
-	public static final int AREA_SCALE = 15;
+	public static final int AREA_DEFAULT_SCALE	= 15;
+	public static final int AREA_MIN_SCALE	  	= 5;
+	public static final int AREA_MAX_SCALE    	= 100;
 	
 	private AreaModel() {
-		this.setAreaScale(AreaModel.AREA_SCALE);
+		this.setAreaScale(AreaModel.AREA_DEFAULT_SCALE);
 	}
 	
 	public static AreaModel Instance() {

@@ -70,7 +70,9 @@ public class AreaView extends JLayeredPane {
 	private void setLiseners() {
 		this.addMouseListener(new MouseAreaListener());
 		this.addKeyListener(new KeyMoveListener());
+		
 		this.mobileLayer.addMouseMotionListener(new AreaMotionAdapter());
+		this.mobileLayer.addMouseListener(new AreaClickAdapter());
 		
 		for (AntennaView antennaView: this.cellsLayer.getAntennas()) {
 			antennaView.addMouseMotionListener(new AreaMotionAdapter());
@@ -125,6 +127,10 @@ public class AreaView extends JLayeredPane {
 		}
 	}
 	
+	public void updateMobile() {
+		this.getMobileLayerView().update();
+	}
+	
 	protected void fireFocusControlEvent(AreaControlEvent controlEvent) {
 		Object[] listeners = this.listenerList.getListenerList();
 	     
@@ -134,7 +140,7 @@ public class AreaView extends JLayeredPane {
 	          if (listeners[i] == AreaListener.class) 
 	          {
 	               // pass the event to the listeners event dispatch method
-	                ((AreaListener)listeners[i+1]).keyboardMoved(controlEvent);
+	                ((AreaListener)listeners[i+1]).areaClicked(controlEvent);
 	          }            
 	     }
 	}
@@ -311,16 +317,16 @@ public class AreaView extends JLayeredPane {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
+			Point positionPressed = AreaView.this.positionMousePressed;
 			
 			if (e.getSource() instanceof AntennaView) {
 				int type = AreaAntennaMoveEvent.ANTENNA_MOVE;
 				Antenna antenna = ((AntennaView) e.getSource()).getAntennaModel();
-				Point positionPressed = AreaView.this.positionMousePressed;
-				AreaView.this.fireMoveAntennaEvent(new AreaAntennaMoveEvent(AreaView.this, type, antenna, (int) (e.getX() - positionPressed.getX()), e.getY() -  (int) (positionPressed.getY())));
+				AreaView.this.fireMoveAntennaEvent(new AreaAntennaMoveEvent(AreaView.this, type, antenna, (int) (e.getX() - positionPressed.getX()), (int) (e.getY() - (positionPressed.getY()))));
 			}
 			else {	// e.getSource() instanceof MobileLayer
 				int type = AreaMobileMoveEvent.MOBILE_MOVE;
-				AreaView.this.fireMoveMobileEvent(new AreaMobileMoveEvent(AreaView.this, type, e.getX(), e.getY()));
+				AreaView.this.fireMoveMobileEvent(new AreaMobileMoveEvent(AreaView.this, type, (int) (e.getX() - positionPressed.getX()), (int) (e.getY() - positionPressed.getY())));
 			}
 			
 		}

@@ -1,5 +1,6 @@
 package controllers;
 
+import config.MainConfig;
 import events.AreaAntennaMoveEvent;
 import events.AreaAntennaSelectEvent;
 import events.AreaControlEvent;
@@ -10,10 +11,11 @@ import models.area.AreaModel;
 import models.info.InfoModel;
 import models.menu.MenuModel;
 import models.mobile.Mobile;
+import models.mobile.Motion;
 import models.network.Antenna;
 import views.area.AreaView;
 
-public class AreaController {
+public class AreaController implements Runnable {
 	
 	private AreaModel areaModel;
 	private AreaView areaView;
@@ -26,6 +28,10 @@ public class AreaController {
 		
 		this.setListeners();
 		this.resize();
+		
+		Mobile mobile = Mobile.Instance();
+		mobile.setX(areaModel.getAreaWidth() * areaModel.getAreaScale() / 2);
+		mobile.setY(areaModel.getAreaHeight() * areaModel.getAreaScale() / 2);
 	}
 	
 	public static AreaController Instance() {
@@ -45,25 +51,55 @@ public class AreaController {
 			public void mobileMoved(AreaMobileMoveEvent e) {
 				AreaModel areaModel = AreaModel.Instance();
 				Mobile mobile = Mobile.Instance();
-				mobile.setX(e.getX() * areaModel.getAreaScale());
-				mobile.setY(e.getY() * areaModel.getAreaScale());
+				mobile.setX(mobile.getX() + e.getX() * areaModel.getAreaScale());
+				mobile.setY(mobile.getY() + e.getY() * areaModel.getAreaScale());		
 				
+				AreaController.this.getAreaView().updateMobile();
 			}
 			
 			@Override
 			public void keyboardMoved(AreaControlEvent e) {
-				// TODO Auto-generated method stub
+				switch (e.getID()) {
+					case AreaControlEvent.KEYLEFT_PRESSED:
+						Mobile.Instance().getMotion().addMotion(Motion.MOVE_LEFT);
+						break;
+					case AreaControlEvent.KEYLEFT_RELEASED:
+						Mobile.Instance().getMotion().removeMotion(Motion.MOVE_LEFT);
+						break;	
+					case AreaControlEvent.KEYRIGHT_PRESSED:
+						Mobile.Instance().getMotion().addMotion(Motion.MOVE_RIGHT);
+						break;
+					case AreaControlEvent.KEYRIGHT_RELEASED:
+						Mobile.Instance().getMotion().removeMotion(Motion.MOVE_RIGHT);
+						break;
+					case AreaControlEvent.KEYUP_PRESSED:
+						Mobile.Instance().getMotion().addMotion(Motion.MOVE_UP);
+						break;
+					case AreaControlEvent.KEYUP_RELEASED:
+						Mobile.Instance().getMotion().removeMotion(Motion.MOVE_UP);
+						break;
+					case AreaControlEvent.KEYDOWN_PRESSED:
+						Mobile.Instance().getMotion().addMotion(Motion.MOVE_DOWN);
+						break;
+					case AreaControlEvent.KEYDOWN_RELEASED:
+						Mobile.Instance().getMotion().removeMotion(Motion.MOVE_DOWN);
+						break;
+				}
+				
+
 			}
 			
 			@Override
 			public void areaClicked(AreaControlEvent e) {
-				AreaController.this.getAreaView().setRequestFocusEnabled(true);
+
+				AreaController.this.getAreaView().requestFocus();
 				
 			}
 			
 			@Override
 			public void antennaSelected(AreaAntennaSelectEvent e) {
-				// TODO Auto-generated method stub
+				
+				AreaController.this.getAreaView().requestFocus();
 				
 			}
 			
@@ -73,8 +109,8 @@ public class AreaController {
 				Antenna antennaModel = e.getAntenna();
 				antennaModel.setX(antennaModel.getX() + e.getX() * areaModel.getAreaScale());
 				antennaModel.setY(antennaModel.getY() + e.getY() * areaModel.getAreaScale());
-				AreaController.this.getAreaView().updateAntenna(antennaModel);
 				
+				AreaController.this.getAreaView().updateAntenna(antennaModel);
 				AreaController.this.getAreaView().updateCell(antennaModel.getCellGSM());
 			}
 		});
@@ -108,6 +144,21 @@ public class AreaController {
 		this.getAreaModel().setAreaHeight(height);
 		
 		this.getAreaView().resize();
+	}
+	
+	@Override
+	public void run() {
+		
+		while(true) {
+			try {
+				Mobile.Instance().update();
+				this.getAreaView().updateMobile();
+				Thread.currentThread().sleep(1000 / ApplicationModel.Instance().getFpsRate());
+			}
+			catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

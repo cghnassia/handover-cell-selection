@@ -38,7 +38,7 @@ function selectionGSM
 		//now we find the best cell
 		if(candidateCells.length > 0) {
 			Cell tmpCell
-			for tmpCell in candidateCells() {
+			for tmpCell in candidateCells {
 				if(selectedCell == null || tmpCell.strength > selectedCell.strength) {
 					selectedCell = tmpCell
 				}
@@ -58,7 +58,7 @@ function reselectionUMTS
 		candidateCell = null
 		if(neighborCells.length > 0) {
 			Cell tmpCell
-			for tmpCell in neighborCells() {
+			for tmpCell in neighborCells {
 				if((candidateCell == null || (tmpCell.strength > candidateCell.strength)) && (! tmpCell.isBarred)) {
 					candidateCell = tmpCell
 				}
@@ -78,7 +78,7 @@ function reselectionUMTS
 			}
 		}
 	end body
-end functon
+end function
 
 function reselectionGSM
 	input
@@ -91,7 +91,7 @@ function reselectionGSM
 		candidateCell = null
 		if(neighborCells.length > 0) {
 			Cell tmpCell
-			for tmpCell in neighborCells() {
+			for tmpCell in neighborCells {
 				if((candidateCell == null || (tmpCell.strength > candidateCell.strength)) && (! tmpCell.isBarred)) {
 					candidateCell = tmpCell
 				}

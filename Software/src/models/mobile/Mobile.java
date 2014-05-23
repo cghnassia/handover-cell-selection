@@ -1,6 +1,7 @@
 package models.mobile;
 
 import models.application.ApplicationModel;
+import models.area.AreaModel;
 import config.MainConfig;
 
 public class Mobile {
@@ -40,20 +41,36 @@ public class Mobile {
 		return Mobile.mobile;
 	}
 	
-	public int getX() {
-		return Math.round(this.x);
+	public float getX() {
+		return this.x;
 	}
 	
-	public void setX(int x) {
+	public void setX(float x) {
+		AreaModel areaModel = AreaModel.Instance();
+		
 		this.x = x;
+		if(this.x < 0) {
+			this.x = 0;
+		}
+		else if (this.x > areaModel.getAreaWidth() * areaModel.getAreaScale()) {
+			this.x = areaModel.getAreaWidth() * areaModel.getAreaScale();
+		}
 	}
 	
-	public int getY() {
-		return Math.round(this.y);
+	public float getY() {
+		return this.y;
 	}
 	
-	public void setY(int y) {
+	public void setY(float y) {
+		AreaModel areaModel = AreaModel.Instance();
+		
 		this.y = y;
+		if(this.y < 0) {
+			this.y = 0;
+		}
+		else if (this.y > areaModel.getAreaHeight() * areaModel.getAreaScale()) {
+			this.y = areaModel.getAreaHeight() * areaModel.getAreaScale();
+		}
 	}
 	
 	public int getSpeed() {
@@ -76,33 +93,21 @@ public class Mobile {
 		return this.motion;
 	}
 	
-	/*public void updatePosition() {
+	public void update() {
+		ApplicationModel applicationModel = ApplicationModel.Instance();
+
 		if (this.getMotion().getMotionHorizontal() == Motion.MOVE_LEFT) {
-			this.x -= (float) this.speed / MainConfig.FPS_RATE;
-			if(this.x < 0) {
-				this.x = 0;
-			}
+			this.setX(this.getX() - this.speed / applicationModel.getFpsRate());
 		}
 		else if (this.getMotion().getMotionHorizontal() == Motion.MOVE_RIGHT) {
-			this.x += (float) this.speed/ MainConfig.FPS_RATE;
-			if(this.x > (MainConfig.WINDOW_WIDTH - MainConfig.MENU_WIDTH) * MainConfig.AREA_SCALE) {
-				this.x = (MainConfig.WINDOW_WIDTH - MainConfig.MENU_WIDTH) * MainConfig.AREA_SCALE;
-			}
+			this.setX(this.getX() + this.speed / applicationModel.getFpsRate());
 		}
 		
 		if (this.getMotion().getMotionVertical() == Motion.MOVE_UP) {
-			this.y -= (float) this.speed / MainConfig.FPS_RATE;
-			if(this.y < 0) {
-				this.y = 0;
-			}
+			this.setY(this.getY() - this.speed / applicationModel.getFpsRate());
 		}
 		else if (this.getMotion().getMotionVertical() == Motion.MOVE_DOWN) {
-			this.y += (float) this.speed / MainConfig.FPS_RATE;;
-			if(this.y > (MainConfig.WINDOW_HEIGHT - MainConfig.INFO_HEIGHT) * MainConfig.AREA_SCALE) {
-				this.y = (MainConfig.WINDOW_HEIGHT - MainConfig.INFO_HEIGHT) * MainConfig.AREA_SCALE;
-			}
+			this.setY(this.getY() + this.speed / applicationModel.getFpsRate());
 		}
-		
-		//System.out.println("x" + this.x  + ", y :" + this.y);	
-	}*/
+	}
 }

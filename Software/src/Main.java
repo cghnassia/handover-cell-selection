@@ -33,6 +33,10 @@ public class Main {
 		
 		applicationController.getApplicationView().setVisible(true);
 		//applicationController.getApplicationView().pack();
+		
+		Thread threadArea = new Thread(areaController, "Area");
+		
+		threadArea.start();
 	}
 
 }

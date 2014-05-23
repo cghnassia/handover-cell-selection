@@ -2,6 +2,7 @@ package views.area;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -17,6 +18,7 @@ public class CellView extends JLabel {
 	
 	public CellView(Cell cellModel) {
 		this.setCellModel(cellModel);
+		this.setOpaque(false);
 		this.update();
 	}
 	
