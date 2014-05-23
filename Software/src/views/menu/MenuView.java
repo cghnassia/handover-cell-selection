@@ -43,6 +43,7 @@ public class MenuView extends JPanel {
 	
 	private MenuModel menuModel;
 	private MenuPhoneView menuPhoneView;
+	private MenuAntennaView menuAntennaView;
 	
 	public MenuView(MenuModel menuModel) {
 		
@@ -50,7 +51,9 @@ public class MenuView extends JPanel {
 		this.menuModel = menuModel;
 		
 		this.setMenuPhoneView(new MenuPhoneView());
+		this.setMenuAntennaView(new MenuAntennaView());
 		this.add(getMenuPhoneView(), BorderLayout.NORTH);
+		this.add(getMenuAntennaView());
 		this.setPreferredSize(new Dimension(menuModel.getMenuWidth(), menuModel.getMenuHeight()));
 		
 		this.setListeners();
@@ -131,6 +134,13 @@ public class MenuView extends JPanel {
 		this.menuPhoneView = menuPhoneView;
 	}
 
+	public MenuAntennaView getMenuAntennaView() {
+		return this.menuAntennaView;
+	}
+	
+	public void setMenuAntennaView(MenuAntennaView menuAntennaView) {
+		this.menuAntennaView = menuAntennaView;
+	}
 
 	class ButtonPhoneListener implements ActionListener {
 
