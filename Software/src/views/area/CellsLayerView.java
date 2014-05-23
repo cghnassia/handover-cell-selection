@@ -21,6 +21,7 @@ import models.network.Antenna;
 import models.network.AntennaManager;
 import models.network.Cell;
 import models.network.CellGSM;
+import models.network.CellManager;
 import models.network.CellUMTS;
 import models.network.Network;
 import models.utilities.LoadImage;
@@ -35,6 +36,7 @@ public class CellsLayerView extends JPanel {
 		this.antennas = new HashSet<>();
 		this.cells = new HashSet<>();
 		
+		Network network = Network.Instance();
 		AntennaManager antennaManager = AntennaManager.Instance();
 		for (Antenna antenna: antennaManager.getAntennas()) {
 			
@@ -42,6 +44,12 @@ public class CellsLayerView extends JPanel {
 			
 			if(antenna.getCellGSM() != null) {
 				CellView cellView = new CellView(antenna.getCellGSM());
+				this.cells.add(cellView);
+				this.add(cellView);
+			}
+			
+			if(antenna.getCellUMTS() != null) {
+				CellView cellView = new CellView(antenna.getCellUMTS());
 				this.cells.add(cellView);
 				this.add(cellView);
 			}
@@ -62,6 +70,18 @@ public class CellsLayerView extends JPanel {
 	
 	public Set<CellView> getCells() {
 		return this.cells;
+	}
+	
+	public void updateCellsVisible() {
+		Network network = Network.Instance();
+		for (CellView cellView: this.cells) {
+			if(cellView.getCellModel().getType() == Cell.CELLTYPE_GSM) {
+				cellView.setVisible(network.isGSM());
+			}
+			else {
+				cellView.setVisible(network.isUMTS());
+			}
+		}
 	}
 	
 	public void resize() {

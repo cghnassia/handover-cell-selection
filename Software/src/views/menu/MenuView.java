@@ -32,6 +32,7 @@ import javax.swing.event.EventListenerList;
 
 import sun.security.krb5.Config;
 import models.menu.MenuModel;
+import models.network.Network;
 import models.utilities.LoadImage;
 import config.MainConfig;
 import controllers.ApplicationController;
@@ -80,6 +81,18 @@ public class MenuView extends JPanel {
 	public void updateSpeed(int value) {
 		this.getMenuPhoneView().getSliderSpeed().setValue(value);
 		this.getMenuPhoneView().getLabelSpeed().setText(value + " m/s");
+	}
+	
+	public void updateCheckBoxes() {
+		Network network = Network.Instance();
+		
+		this.getMenuPhoneView().getCheckBoxGPRS().setEnabled(network.isGSM());
+		this.getMenuPhoneView().getCheckBoxEDGE().setEnabled(network.isGSM());
+		
+		this.getMenuPhoneView().getCheckBoxGSM().setSelected(network.isGSM());
+		this.getMenuPhoneView().getCheckBoxGPRS().setSelected(network.isGPRS());
+		this.getMenuPhoneView().getCheckBoxEDGE().setSelected(network.isEDGE());
+		this.getMenuPhoneView().getCheckBoxUMTS().setSelected(network.isUMTS());
 	}
 	
 	protected void fireControlCheckBoxEvent(MenuControlEvent controlEvent) {

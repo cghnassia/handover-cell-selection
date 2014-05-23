@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import config.MainConfig;
 import models.area.AreaModel;
 import models.network.Cell;
+import models.network.Network;
 
 public class CellView extends JLabel {
 	
@@ -47,11 +48,18 @@ public class CellView extends JLabel {
 		super.paintComponents(g);
 		
 		int size = (int) this.getBounds().getWidth();
-		
+		Network network = Network.Instance();
 		Graphics2D g2d = (Graphics2D) g;
 		
 		g2d.setStroke(new BasicStroke(1));
-		g2d.setColor(MainConfig.CELLGSM_COLOR);
+		
+		
+		if(this.getCellModel().getType() == Cell.CELLTYPE_GSM) {
+			g2d.setColor(MainConfig.CELLGSM_COLOR);
+		}
+		else {
+			g2d.setColor(MainConfig.CELLUMTS_COLOR);
+		}
 		
 		int coordX = (int) (size - size * Math.cos(Math.PI / 6));
 		

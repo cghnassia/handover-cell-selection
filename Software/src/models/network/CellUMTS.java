@@ -18,7 +18,9 @@ public class CellUMTS extends Cell {
 	
 	protected void calculateRadius() {
 				
-		int diameter = (int) (Math.pow(10, (-CellUMTS.MINSTRENGTH + this.getPower() - 32.44 - 20 * Math.log10(this.getFrequency()))/ (20 * MainConfig.COEFF_REFRACTION)) * 1000);
-		this.setRadius(diameter / 2);
+		//int diameter = (int) (Math.pow(10, (-CellUMTS.MINSTRENGTH + this.getPower() - 32.44 - 20 * Math.log10(this.getFrequency()))/ (20 * MainConfig.COEFF_REFRACTION)) * 1000);
+		//this.setRadius(diameter / 2);
+		
+		this.setRadius(500);
 	}
 }

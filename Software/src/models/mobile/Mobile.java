@@ -110,4 +110,10 @@ public class Mobile {
 			this.setY(this.getY() + this.speed / applicationModel.getFpsRate());
 		}
 	}
+	
+	public void checkIsInArea() {
+		//To be sure the phone stay in the Area
+		this.setX(this.getX());
+		this.setY(this.getY());
+	}
 }

@@ -24,7 +24,7 @@ public class ApplicationModel implements Runnable {
 	
 	private static ApplicationModel applicationModel;
 	
-	private static final int WINDOW_WIDTH = 1500;
+	private static final int WINDOW_WIDTH = 1300;
 	private static final int WINDOW_HEIGHT = 1000;
 
 	private static final int FPS_RATE = 24;

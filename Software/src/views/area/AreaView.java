@@ -13,6 +13,9 @@ import java.awt.event.MouseMotionListener;
 import java.util.Set;
 
 import javax.swing.JLayeredPane;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import views.menu.MenuView;
 import models.application.ApplicationModel;
@@ -27,6 +30,7 @@ import config.MainConfig;
 import events.AreaAntennaMoveEvent;
 import events.AreaAntennaSelectEvent;
 import events.AreaControlEvent;
+import events.AreaDataEvent;
 import events.AreaListener;
 import events.AreaMobileMoveEvent;
 import events.MenuControlEvent;
@@ -38,6 +42,7 @@ public class AreaView extends JLayeredPane {
 	
 	private CellsLayerView cellsLayer;
 	private MobileLayerView mobileLayer;
+	private ScaleLayerView scaleLayer;
 	
 	private Point positionMousePressed;
 	
@@ -47,10 +52,13 @@ public class AreaView extends JLayeredPane {
 		
 		this.cellsLayer = new CellsLayerView();
 		this.mobileLayer = new MobileLayerView();
+		this.scaleLayer = new ScaleLayerView();
+		
 		this.setPositionMousePressed(new Point());
 		
 		this.add(this.cellsLayer, new Integer(0));
 		this.add(this.mobileLayer, new Integer(1));
+		this.add(this.scaleLayer, new Integer(2));
 		
 		this.setBackground(MainConfig.AREA_COLOR);
 		this.setOpaque(true);
@@ -69,15 +77,17 @@ public class AreaView extends JLayeredPane {
 	
 	private void setLiseners() {
 		this.addMouseListener(new MouseAreaListener());
+		this.mobileLayer.addMouseListener(new MouseAreaListener()); //just for focus as well
 		this.addKeyListener(new KeyMoveListener());
 		
 		this.mobileLayer.addMouseMotionListener(new AreaMotionAdapter());
-		this.mobileLayer.addMouseListener(new AreaClickAdapter());
 		
 		for (AntennaView antennaView: this.cellsLayer.getAntennas()) {
 			antennaView.addMouseMotionListener(new AreaMotionAdapter());
 			antennaView.addMouseListener(new AreaClickAdapter());
 		}
+		
+		this.scaleLayer.getScalSlider().addChangeListener(new AreaScaleAdapter());
 	}
 	
 	public AreaModel getAreaModel() {
@@ -106,6 +116,8 @@ public class AreaView extends JLayeredPane {
 	
 	public void resize() {
 		this.cellsLayer.setBounds(0, 0, this.getAreaModel().getAreaWidth(), this.getAreaModel().getAreaHeight());
+		//this.mobileLayer.resize():
+		this.scaleLayer.resize();
 	}
 	
 	public void updateAntenna(Antenna antennaModel) {
@@ -129,6 +141,12 @@ public class AreaView extends JLayeredPane {
 	
 	public void updateMobile() {
 		this.getMobileLayerView().update();
+	}
+	
+	public void updateLayerView() {
+		this.getCellsLayerView().updateCellsVisible();
+		//this.revalidate();
+		//this.repaint();
 	}
 	
 	protected void fireFocusControlEvent(AreaControlEvent controlEvent) {
@@ -197,6 +215,20 @@ public class AreaView extends JLayeredPane {
 	          {
 	               // pass the event to the listeners event dispatch method
 	                ((AreaListener)listeners[i+1]).mobileMoved(areaMobileMoveEvent);
+	          }            
+	     }
+	}
+	
+	protected void fireChangeScaleEvent(AreaDataEvent areaDataEvent) {
+		Object[] listeners = this.listenerList.getListenerList();
+	     
+	     int numListeners = listeners.length;
+	     for (int i = 0; i< numListeners; i += 2) 
+	     {
+	          if (listeners[i] == AreaListener.class) 
+	          {
+	               // pass the event to the listeners event dispatch method
+	                ((AreaListener)listeners[i+1]).scaleChanged(areaDataEvent);
 	          }            
 	     }
 	}
@@ -373,6 +405,18 @@ public class AreaView extends JLayeredPane {
 		public void mouseExited(MouseEvent e) {
 			// TODO Auto-generated method stub
 			
+		}
+		
+	}
+	
+	class AreaScaleAdapter implements ChangeListener {
+
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			int type = AreaDataEvent.TYPE_SLIDER_SCALE;
+			int value = ((JSlider) e.getSource()).getValue();
+			
+			AreaView.this.fireChangeScaleEvent(new AreaDataEvent(AreaView.this, type, value));
 		}
 		
 	}

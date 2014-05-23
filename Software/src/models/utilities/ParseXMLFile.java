@@ -76,7 +76,7 @@ public class ParseXMLFile {
 							cellManager.addCellGSM(cellGSM);
 							antenna.setCellGSM(cellGSM);
 						}
-						else if(cellNode.getAttribute("type") == "UMTS") {
+						else if(cellNode.getAttribute("type").contains("UMTS")) {
 							CellUMTS cellUMTS = new CellUMTS(Integer.parseInt(cellNode.getAttribute("power")), Integer.parseInt(cellNode.getAttribute("frequency")));
 							cellManager.addCellUMTS(cellUMTS);
 							antenna.setCellUMTS(cellUMTS);

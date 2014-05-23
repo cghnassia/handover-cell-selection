@@ -32,7 +32,7 @@ public class Main {
 		applicationController.getApplicationView().setInfoView(infoController.getInfoView());
 		
 		applicationController.getApplicationView().setVisible(true);
-		//applicationController.getApplicationView().pack();
+		applicationController.getApplicationView().pack();
 		
 		Thread threadArea = new Thread(areaController, "Area");
 		

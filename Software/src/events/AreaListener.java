@@ -9,4 +9,5 @@ public interface AreaListener extends EventListener {
 	void antennaSelected(AreaAntennaSelectEvent e);
 	void antennaMoved(AreaAntennaMoveEvent e);
 	void mobileMoved(AreaMobileMoveEvent e);
+	void scaleChanged(AreaDataEvent e);
 }

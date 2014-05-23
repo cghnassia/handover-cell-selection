@@ -6,7 +6,11 @@ import events.MenuListener;
 import models.application.ApplicationModel;
 import models.menu.MenuModel;
 import models.mobile.Mobile;
+import models.network.Cell;
+import models.network.CellManager;
+import models.network.Network;
 import views.application.ApplicationView;
+import views.area.AreaView;
 import views.menu.MenuView;
 
 public class MenuController {
@@ -31,8 +35,25 @@ public class MenuController {
 			
 			@Override
 			public void checkboxSelected(MenuControlEvent e) {
-				System.out.println("checkbox selected" + e.getID());
+				Network network = Network.Instance();
 				
+				switch(e.getID()) {
+					case MenuControlEvent.TYPE_CHECKBOX_GSM:
+						network.setGSM(! network.isGSM());
+						break;
+					case MenuControlEvent.TYPE_CHECKBOX_GPRS:
+						network.setGPRS(! network.isGPRS());
+						break;
+					case MenuControlEvent.TYPE_CHECKBOX_EDGE:
+						network.setEDGE(! network.isEDGE());
+						break;
+					case MenuControlEvent.TYPE_CHECKBOX_UMTS:
+						network.setUMTS(! network.isUMTS());
+						break;
+				}
+			
+				MenuController.this.menuView.updateCheckBoxes();
+				AreaController.Instance().getAreaView().updateLayerView();
 			}
 			
 			@Override

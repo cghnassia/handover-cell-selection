@@ -16,7 +16,6 @@ public abstract class Cell {
 	public static final int CELLTYPE_UMTS = 1;
 	
 	
-	//J'ai supprime le mobile -- Attention
 	public Cell(int power, int frequency) {
 		
 		this.setFrequency(frequency);

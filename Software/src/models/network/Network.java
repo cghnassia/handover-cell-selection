@@ -7,14 +7,24 @@ public class Network {
 	private boolean isEDGE;
 	private boolean isUMTS;
 
+	private static Network network;
 	
-	public Network() {
+	private Network() {
+		
 		this.setGSM(true);
 		this.setGPRS(true);
 		this.setEDGE(true);
 		this.setUMTS(true);
 	}
-
+	
+	public static Network Instance() {
+		
+		if(Network.network == null) {
+			Network.network = new Network();
+		}
+		
+		return Network.network;
+	}
 
 	public boolean isGSM() {
 		return this.isGSM;

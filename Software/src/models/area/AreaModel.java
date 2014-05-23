@@ -11,7 +11,7 @@ public class AreaModel {
 	
 	public static final int AREA_DEFAULT_SCALE	= 15;
 	public static final int AREA_MIN_SCALE	  	= 5;
-	public static final int AREA_MAX_SCALE    	= 100;
+	public static final int AREA_MAX_SCALE    	= 50;
 	
 	private AreaModel() {
 		this.setAreaScale(AreaModel.AREA_DEFAULT_SCALE);
@@ -35,7 +35,8 @@ public class AreaModel {
 	}
 
 	public int getAreaHeight() {
-		return this.areaHeight;
+		//WHAT THE FUCK I DON'T UNDERSTAND
+		return this.areaHeight - 20;
 	}
 
 	public void setAreaHeight(int areaHeight) {
