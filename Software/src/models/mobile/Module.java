@@ -2,12 +2,33 @@ package models.mobile;
 
 import java.util.Set;
 
-public class Module {
+import models.network.Cell;
+
+public abstract class Module {
 	
-	//private int gain;
+	private Mobile mobile;
 	
-	public Module() {
-		//this.gain = 0;
+	public Module(Mobile mobile) {
+		this.setMobile(mobile);
 	}
 
+	public Mobile getMobile() {
+		return this.mobile;
+	}
+
+	public void setMobile(Mobile mobile) {
+		this.mobile = mobile;
+	}
+	
+	public abstract void doMeasurements();
+	
+	public abstract void resetMeasurements();
+	
+	public abstract Cell doSelection();
+	
+	public abstract Cell doIdleReselection();
+	
+	public abstract Cell doHandover();
+	
+	public abstract Cell doDataReselection();
 }

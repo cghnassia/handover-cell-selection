@@ -2,6 +2,7 @@ package controllers;
 
 import views.info.InfoView;
 import models.info.InfoModel;
+import models.network.Cell;
 
 public class InfoController {
 
@@ -39,5 +40,21 @@ public class InfoController {
 
 	public void setInfoView(InfoView infoView) {
 		this.infoView = infoView;
+	}
+	
+	public void Selection(Cell cell) {
+	
+	}
+
+	public void idleReselection (Cell cellBefore, Cell cellAfter) {
+		
+	}
+	
+	public void handover(Cell cellBefore, Cell cellAfter) {
+		
+	}
+	
+	public void dataReslection(Cell cellBefore, Cell cellAfter) {
+		
 	}
 }

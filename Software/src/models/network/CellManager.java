@@ -25,6 +25,16 @@ public final class CellManager {
 		return CellManager.cellManager;
 	}
 	
+	public Cell getCell(int id) {
+		
+		Cell res = getCellGSM(id);
+		if(res == null) {
+			res = getCellUMTS(id);
+		}
+		
+		return res;
+	}
+	
 	public CellGSM getCellGSM(int id) {
 		
 		CellGSM res = null;

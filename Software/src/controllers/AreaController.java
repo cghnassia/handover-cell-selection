@@ -6,7 +6,7 @@ import events.AreaAntennaSelectEvent;
 import events.AreaControlEvent;
 import events.AreaDataEvent;
 import events.AreaListener;
-import events.AreaMobileMoveEvent;
+import events.AreaMoveEvent;
 import models.application.ApplicationModel;
 import models.area.AreaModel;
 import models.info.InfoModel;
@@ -16,7 +16,9 @@ import models.mobile.Motion;
 import models.network.Antenna;
 import models.network.AntennaManager;
 import models.network.Cell;
+import models.network.CellGSM;
 import models.network.CellManager;
+import models.network.CellUMTS;
 import views.area.AreaView;
 
 public class AreaController implements Runnable {
@@ -52,7 +54,8 @@ public class AreaController implements Runnable {
 		this.areaView.addAreaListener(new AreaListener() {
 			
 			@Override
-			public void mobileMoved(AreaMobileMoveEvent e) {
+			public void mobileMoved(AreaMoveEvent e) {
+	
 				AreaModel areaModel = AreaModel.Instance();
 				Mobile mobile = Mobile.Instance();
 				mobile.setX(mobile.getX() + e.getX() * areaModel.getAreaScale());
@@ -97,6 +100,8 @@ public class AreaController implements Runnable {
 			public void areaClicked(AreaControlEvent e) {
 
 				AreaController.this.getAreaView().requestFocus();
+				MenuController.Instance().getMenuView().getMenuAntennaView().setModelAntenna(null);
+				AreaController.this.getAreaView().updateActiveAntenna(null);
 				
 			}
 			
@@ -104,6 +109,8 @@ public class AreaController implements Runnable {
 			public void antennaSelected(AreaAntennaSelectEvent e) {
 				
 				AreaController.this.getAreaView().requestFocus();
+				MenuController.Instance().getMenuView().getMenuAntennaView().setModelAntenna(e.getAntenna());
+				AreaController.this.getAreaView().updateActiveAntenna(e.getAntenna());
 				
 			}
 			
@@ -124,6 +131,7 @@ public class AreaController implements Runnable {
 				int areaScale = AreaModel.AREA_MAX_SCALE - e.getValue() + AreaModel.AREA_MIN_SCALE;
 				AreaModel areaModel = AreaController.this.getAreaModel();
 				areaModel.setAreaScale(areaScale);
+				AreaController.this.getAreaView().updateScale();
 				
 				for (Antenna antennaModel : AntennaManager.Instance().getAntennas()) {
 					AreaController.this.getAreaView().updateAntenna(antennaModel);
@@ -131,8 +139,27 @@ public class AreaController implements Runnable {
 					AreaController.this.getAreaView().updateCell(antennaModel.getCellUMTS());
 				}
 				
-				Mobile.Instance().checkIsInArea();
+				//Mobile.Instance().checkIsInArea();
+				areaModel.checkBounds();
 				
+			}
+
+			@Override
+			public void areaMoved(AreaMoveEvent e) {
+				int x = e.getX();
+				int y = e.getY();
+
+				AreaModel areaModel = AreaController.this.getAreaModel();
+				areaModel.setAreaX(areaModel.getAreaX() - x);
+				areaModel.setAreaY(areaModel.getAreaY() - y);
+				
+				AreaController.this.getAreaView().updateMobile();
+				for (Antenna antennaModel : AntennaManager.Instance().getAntennas()) {
+					AreaController.this.getAreaView().updateAntenna(antennaModel);
+					AreaController.this.getAreaView().updateCell(antennaModel.getCellGSM());
+					AreaController.this.getAreaView().updateCell(antennaModel.getCellUMTS());
+				}
+		
 			}
 		});
 	}
@@ -172,7 +199,7 @@ public class AreaController implements Runnable {
 		
 		while(true) {
 			try {
-				Mobile.Instance().update();
+				Mobile.Instance().updatePosition();
 				this.getAreaView().updateMobile();
 				Thread.currentThread().sleep(1000 / ApplicationModel.Instance().getFpsRate());
 			}

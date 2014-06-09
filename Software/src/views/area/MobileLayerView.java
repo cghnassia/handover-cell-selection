@@ -50,7 +50,7 @@ public class MobileLayerView extends JPanel {
 		int x = (int) (this.mobileModel.getX() / (double) areaModel.getAreaScale() - width / 2);
 		int y = (int) (this.mobileModel.getY() / (double) areaModel.getAreaScale()  - height / 2);
 		
-		this.setBounds(x, y, width, height);
+		this.setBounds(x - areaModel.getAreaX(), y - areaModel.getAreaY(), width, height);
 	}
 	
 }

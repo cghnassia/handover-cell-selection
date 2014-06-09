@@ -21,7 +21,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -29,6 +31,8 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import sun.security.krb5.Config;
 import models.menu.MenuModel;
@@ -54,7 +58,7 @@ public class MenuView extends JPanel {
 		this.setMenuPhoneView(new MenuPhoneView());
 		this.setMenuAntennaView(new MenuAntennaView());
 		this.add(getMenuPhoneView(), BorderLayout.NORTH);
-		this.add(getMenuAntennaView());
+		this.add(getMenuAntennaView(),BorderLayout.SOUTH);
 		this.setPreferredSize(new Dimension(menuModel.getMenuWidth(), menuModel.getMenuHeight()));
 		
 		this.setListeners();
@@ -69,13 +73,24 @@ public class MenuView extends JPanel {
 	}
 	
 	private void setListeners() {
+		
 		this.getMenuPhoneView().getButtonCall().addActionListener(new ButtonPhoneListener());
-		this.getMenuPhoneView().getButtonCall().addActionListener(new ButtonPhoneListener());
-		this.getMenuPhoneView().getSliderSpeed().addChangeListener(new SliderSpeedListener());
-		this.getMenuPhoneView().getCheckBoxGSM().addItemListener(new CheckBoxNetworkListener());
-		this.getMenuPhoneView().getCheckBoxGPRS().addItemListener(new CheckBoxNetworkListener());
-		this.getMenuPhoneView().getCheckBoxEDGE().addItemListener(new CheckBoxNetworkListener());
-		this.getMenuPhoneView().getCheckBoxUMTS().addItemListener(new CheckBoxNetworkListener());
+		this.getMenuPhoneView().getButtonData().addActionListener(new ButtonPhoneListener());
+		this.getMenuPhoneView().getSliderSpeed().addChangeListener(new SliderListener());
+		this.getMenuPhoneView().getCheckBoxGSM().addItemListener(new CheckBoxListener());
+		this.getMenuPhoneView().getCheckBoxGPRS().addItemListener(new CheckBoxListener());
+		this.getMenuPhoneView().getCheckBoxEDGE().addItemListener(new CheckBoxListener());
+		this.getMenuPhoneView().getCheckBoxUMTS().addItemListener(new CheckBoxListener());
+		
+		this.getMenuAntennaView().getComboArea().addItemListener(new ComboIntegerListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getCheckBoxGSM().addItemListener(new CheckBoxListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getSliderPower().addChangeListener(new SliderListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getSliderRxAccessMin().addChangeListener(new SliderListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getSliderReselectOffset().addChangeListener(new SliderListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getSliderReselectHysteresis().addChangeListener(new SliderListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getComboQSI().addItemListener(new ComboIntegerListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getComboQSC().addItemListener(new ComboIntegerListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getListNeighbors().addListSelectionListener(new ListListener());
 	}
 	
 	public void updateSpeed(int value) {
@@ -137,6 +152,34 @@ public class MenuView extends JPanel {
 	          }            
 	     }
 	}
+	
+	protected void fireDataComboEvent(MenuDataEvent dataEvent) {
+		Object[] listeners = this.listenerList.getListenerList();
+	     
+	     int numListeners = listeners.length;
+	     for (int i = 0; i< numListeners; i += 2) 
+	     {
+	          if (listeners[i] == MenuListener.class) 
+	          {
+	               // pass the event to the listeners event dispatch method
+	                ((MenuListener)listeners[i+1]).ComboChanged(dataEvent);
+	          }            
+	     }
+	}
+	
+	protected void fireControlListEvent(MenuControlEvent controlEvent) {
+		Object[] listeners = this.listenerList.getListenerList();
+	     
+	     int numListeners = listeners.length;
+	     for (int i = 0; i< numListeners; i += 2) 
+	     {
+	          if (listeners[i] == MenuListener.class) 
+	          {
+	               // pass the event to the listeners event dispatch method
+	                ((MenuListener)listeners[i+1]).listChanged(controlEvent);
+	          }            
+	     }
+	}
 		
 	
 	public MenuPhoneView getMenuPhoneView() {
@@ -159,14 +202,22 @@ public class MenuView extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			
+			int type;
+			if (e.getSource() == MenuView.this.getMenuPhoneView().getButtonCall()) {
+				type = MenuControlEvent.TYPE_BUTTON_CALL;
+			}
+			else { // (e.getSource() == MenuView.this.getMenuPhoneView().getButtonData()) {
+				type = MenuControlEvent.TYPE_BUTTON_DATA;
+			}
+			
+			MenuControlEvent controlEvent = new MenuControlEvent(MenuView.this, type);
+			MenuView.this.fireControlButtonEvent(controlEvent);
 		}
 		
 	}
 	
-	
-	class SliderSpeedListener implements ChangeListener {
+	class SliderListener implements ChangeListener {
 		
 		@Override
 		public void stateChanged(ChangeEvent e) {
@@ -174,12 +225,30 @@ public class MenuView extends JPanel {
 			JSlider source = (JSlider) e.getSource();
 			int value = source.getValue();
 			
-			MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_SPEED, value);
-			MenuView.this.fireDataSliderEvent(dataEvent);
+			if(source == MenuView.this.getMenuPhoneView().getSliderSpeed()) {
+				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_SPEED, value);
+				MenuView.this.fireDataSliderEvent(dataEvent);
+			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getSliderPower()) {
+				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_GSM_POWER, value);
+				MenuView.this.fireDataSliderEvent(dataEvent);
+			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getSliderRxAccessMin()) {
+				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_GSM_ACCESS_MIN, value);
+				MenuView.this.fireDataSliderEvent(dataEvent);
+			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getSliderReselectOffset()) {
+				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_GSM_RESELECT_OFFSET, value);
+				MenuView.this.fireDataSliderEvent(dataEvent);
+			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getSliderReselectHysteresis()) {
+				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_GSM_RESELECT_HYSTERESIS, value);
+				MenuView.this.fireDataSliderEvent(dataEvent);
+			}
 		}
 	}
 	
-	class CheckBoxNetworkListener implements ItemListener {
+	class CheckBoxListener implements ItemListener {
 
 		@Override
 		public void itemStateChanged(ItemEvent e) {
@@ -196,8 +265,11 @@ public class MenuView extends JPanel {
 			else if(source == MenuView.this.getMenuPhoneView().getCheckBoxEDGE()) {
 				type = MenuControlEvent.TYPE_CHECKBOX_EDGE;
 			}
-			else {	//MenuView.this.menuPhoneView.getCheckBoxUMTS()
+			else if (source == MenuView.this.menuPhoneView.getCheckBoxUMTS()) {
 				type = MenuControlEvent.TYPE_CHECKBOX_UMTS;
+			}
+			else { //MenuView.this.menuAntennaView.getMenuCellGSMView().getCheckboxGSM()
+				type = MenuControlEvent.TYPE_CHECKBOX_CELL_GSM;
 			}
 			
 			MenuControlEvent controlEvent = new MenuControlEvent(MenuView.this, type);
@@ -219,6 +291,47 @@ public class MenuView extends JPanel {
 			ApplicationController.this.getModel().getNetwork().setEDGE(ApplicationController.this.getView().getMenuView().getCheckBoxEDGE().isSelected() && ApplicationController.this.getView().getMenuView().getCheckBoxEDGE().isEnabled());
 			*/
 			//ApplicationController.this.getView().getAreaView().getCellsLayerView().repaint();
+		}
+		
+	}
+	
+	class ComboIntegerListener implements ItemListener {
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			JComboBox<ComboOption> source = (JComboBox<ComboOption>) e.getSource();
+			int value = ((ComboOption) e.getItem()).getId();
+			
+			int type;
+			if(source == MenuView.this.getMenuAntennaView().getComboArea()) {
+				type = MenuDataEvent.TYPE_COMBO_AREA;
+			}
+			else if(source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getComboQSC()) {
+				type = MenuDataEvent.TYPE_COMBO_GSM_QSC;
+			}
+			else { //if (source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getComboQSI()) {
+				type = MenuDataEvent.TYPE_COMBO_GSM_QSI;
+			}
+			
+			MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, type, value);
+			MenuView.this.fireDataComboEvent(dataEvent);
+			
+		}	
+	}
+	
+	class ListListener implements ListSelectionListener {
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			// TODO Auto-generated method stub
+			JList<ComboOption> source = (JList<ComboOption>) e.getSource();
+			//int[] values = source.getSelectedIndices();*/
+			if(source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getListNeighbors()) {
+				MenuControlEvent controlEvent = new MenuControlEvent(MenuView.this, MenuControlEvent.TYPE_GSM_NEIGHBORS);
+				MenuView.this.fireControlListEvent(controlEvent);
+			}
+			
 		}
 		
 	}

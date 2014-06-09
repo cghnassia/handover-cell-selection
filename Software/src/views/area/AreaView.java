@@ -2,6 +2,7 @@ package views.area;
 
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -32,7 +33,7 @@ import events.AreaAntennaSelectEvent;
 import events.AreaControlEvent;
 import events.AreaDataEvent;
 import events.AreaListener;
-import events.AreaMobileMoveEvent;
+import events.AreaMoveEvent;
 import events.MenuControlEvent;
 import events.MenuListener;
 
@@ -46,6 +47,8 @@ public class AreaView extends JLayeredPane {
 	
 	private Point positionMousePressed;
 	
+	private Antenna activeAntenna;
+	
 	public AreaView(AreaModel areaModel)  {
 		
 		this.setAreaModel(areaModel);
@@ -53,6 +56,7 @@ public class AreaView extends JLayeredPane {
 		this.cellsLayer = new CellsLayerView();
 		this.mobileLayer = new MobileLayerView();
 		this.scaleLayer = new ScaleLayerView();
+		this.activeAntenna = null;
 		
 		this.setPositionMousePressed(new Point());
 		
@@ -64,6 +68,7 @@ public class AreaView extends JLayeredPane {
 		this.setOpaque(true);
 		this.setFocusable(true);
 		
+		this.updateScale();
 		this.setLiseners();
 	}
 	
@@ -76,8 +81,8 @@ public class AreaView extends JLayeredPane {
 	}
 	
 	private void setLiseners() {
-		this.addMouseListener(new MouseAreaListener());
-		this.mobileLayer.addMouseListener(new MouseAreaListener()); //just for focus as well
+		this.addMouseListener(new AreaClickAdapter());
+		this.mobileLayer.addMouseListener(new AreaClickAdapter());
 		this.addKeyListener(new KeyMoveListener());
 		
 		this.mobileLayer.addMouseMotionListener(new AreaMotionAdapter());
@@ -87,7 +92,11 @@ public class AreaView extends JLayeredPane {
 			antennaView.addMouseListener(new AreaClickAdapter());
 		}
 		
-		this.scaleLayer.getScalSlider().addChangeListener(new AreaScaleAdapter());
+		this.scaleLayer.getScaleSlider().addChangeListener(new AreaScaleAdapter());
+		
+		this.addMouseMotionListener(new AreaMotionAdapter());
+		this.addMouseListener(new AreaClickAdapter());
+		
 	}
 	
 	public AreaModel getAreaModel() {
@@ -116,8 +125,8 @@ public class AreaView extends JLayeredPane {
 	
 	public void resize() {
 		this.cellsLayer.setBounds(0, 0, this.getAreaModel().getAreaWidth(), this.getAreaModel().getAreaHeight());
-		//this.mobileLayer.resize():
 		this.scaleLayer.resize();
+		//this.mobileLayer.resize():
 	}
 	
 	public void updateAntenna(Antenna antennaModel) {
@@ -131,9 +140,20 @@ public class AreaView extends JLayeredPane {
 	}
 	
 	public void updateCell(Cell cellModel) {
+		
 		for (CellView cellView : this.getCellsLayerView().getCells()) {
 			if(cellView.getCellModel() == cellModel) {
 				cellView.update();
+				break;
+			}
+		}
+	}
+	
+	public void updateCellNeighborActive(Cell cellModel, boolean isNeighborActive) {
+		
+		for (CellView cellView : this.getCellsLayerView().getCells()) {
+			if(cellView.getCellModel() == cellModel) {
+				cellView.setNeighborActive(isNeighborActive);
 				break;
 			}
 		}
@@ -145,8 +165,66 @@ public class AreaView extends JLayeredPane {
 	
 	public void updateLayerView() {
 		this.getCellsLayerView().updateCellsVisible();
-		//this.revalidate();
-		//this.repaint();
+	}
+	
+	public void updateScale() {
+		int width = (int) this.scaleLayer.getScaleLabel().getPreferredSize().getWidth();
+		int value = AreaModel.Instance().getAreaScale() * width;
+
+		
+		if(value >= 4000) {
+			this.scaleLayer.getScaleLabel().setText(value / 1000 + " km");
+		}
+		else {
+			this.scaleLayer.getScaleLabel().setText(value + " m");
+		}
+		
+		//this.scaleLayer.resize();
+		//this.scaleLayer.getScaleLabel().repaint();
+	}
+	
+	public void updateActiveAntenna(Antenna activeAntenna) {
+		
+		for (AntennaView antennaView: this.getCellsLayerView().getAntennas()) {
+			
+			if(this.activeAntenna != null && antennaView.getAntennaModel() == this.activeAntenna) {
+					antennaView.setActive(false);
+			}
+			
+			if(activeAntenna != null) {
+				if (antennaView.getAntennaModel() == activeAntenna) {
+					antennaView.setActive(true);
+				}
+				else { // Manque GSM avec UMTS neighbors et inversement
+					if (activeAntenna.getCellGSM() == null || antennaView.getAntennaModel().getCellGSM() == null) {
+						//pass
+					}
+					else if (activeAntenna.getCellGSM().getNeighbors().contains(antennaView.getAntennaModel().getCellGSM())) {
+						this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), true);
+					}
+					else {
+						this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), false);
+					}
+					
+					if (activeAntenna.getCellUMTS() == null || antennaView.getAntennaModel().getCellUMTS() == null) {
+						//pass
+					}
+					else if (activeAntenna.getCellUMTS().getNeighbors().contains(antennaView.getAntennaModel().getCellUMTS())) {
+						this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), true);
+					}
+					else {
+						this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), false);
+					}
+					
+				}
+			}
+			else {
+				this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), false);
+				this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), false);
+			}
+		}
+		
+		this.activeAntenna = activeAntenna;
 	}
 	
 	protected void fireFocusControlEvent(AreaControlEvent controlEvent) {
@@ -205,7 +283,7 @@ public class AreaView extends JLayeredPane {
 	     }
 	}
 	
-	protected void fireMoveMobileEvent(AreaMobileMoveEvent areaMobileMoveEvent) {
+	protected void fireMoveMobileEvent(AreaMoveEvent areaMobileEvent) {
 		Object[] listeners = this.listenerList.getListenerList();
 	     
 	     int numListeners = listeners.length;
@@ -214,7 +292,21 @@ public class AreaView extends JLayeredPane {
 	          if (listeners[i] == AreaListener.class) 
 	          {
 	               // pass the event to the listeners event dispatch method
-	                ((AreaListener)listeners[i+1]).mobileMoved(areaMobileMoveEvent);
+	                ((AreaListener)listeners[i+1]).mobileMoved(areaMobileEvent);
+	          }            
+	     }
+	}
+	
+	protected void fireMoveAreaEvent(AreaMoveEvent areaMoveEvent) {
+		Object[] listeners = this.listenerList.getListenerList();
+	     
+	     int numListeners = listeners.length;
+	     for (int i = 0; i< numListeners; i += 2) 
+	     {
+	          if (listeners[i] == AreaListener.class) 
+	          {
+	               // pass the event to the listeners event dispatch method
+	                ((AreaListener)listeners[i+1]).areaMoved(areaMoveEvent);
 	          }            
 	     }
 	}
@@ -246,9 +338,9 @@ public class AreaView extends JLayeredPane {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			int type = AreaControlEvent.FOCUS_REQUESTED;
+		/*	int type = AreaControlEvent.FOCUS_REQUESTED;
 			AreaView.this.fireFocusControlEvent(new AreaControlEvent(AreaView.this, type));
-			
+			*/
 		}
 
 		@Override
@@ -349,18 +441,25 @@ public class AreaView extends JLayeredPane {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			Point positionPressed = AreaView.this.positionMousePressed;
-			
+			Point positionPressed = AreaView.this.getPositionMousePressed();
+	
 			if (e.getSource() instanceof AntennaView) {
 				int type = AreaAntennaMoveEvent.ANTENNA_MOVE;
 				Antenna antenna = ((AntennaView) e.getSource()).getAntennaModel();
 				AreaView.this.fireMoveAntennaEvent(new AreaAntennaMoveEvent(AreaView.this, type, antenna, (int) (e.getX() - positionPressed.getX()), (int) (e.getY() - (positionPressed.getY()))));
 			}
-			else {	// e.getSource() instanceof MobileLayer
-				int type = AreaMobileMoveEvent.MOBILE_MOVE;
-				AreaView.this.fireMoveMobileEvent(new AreaMobileMoveEvent(AreaView.this, type, (int) (e.getX() - positionPressed.getX()), (int) (e.getY() - positionPressed.getY())));
+			else if (e.getSource() instanceof MobileLayerView) {
+				AreaModel areaModel = AreaModel.Instance();
+				int type = AreaMoveEvent.MOBILE_MOVE;
+				AreaView.this.fireMoveMobileEvent(new AreaMoveEvent(AreaView.this, type, (int) (e.getX() - positionPressed.getX()), (int) (e.getY() - positionPressed.getY())));
 			}
-			
+			else { //e.getSource() instanceof AreaView 
+				int type = AreaMoveEvent.AREA_MOVE;
+				AreaView.this.fireMoveAreaEvent(new AreaMoveEvent(AreaView.this, type, (int) (e.getX() - positionPressed.getX()), (int) (e.getY() - positionPressed.getY())));
+				
+				positionPressed.x = e.getX() ;
+				positionPressed.y = e.getY();
+			}
 		}
 
 		@Override
@@ -375,8 +474,11 @@ public class AreaView extends JLayeredPane {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			int type = AreaControlEvent.FOCUS_REQUESTED;
+			AreaView.this.fireFocusControlEvent(new AreaControlEvent(AreaView.this, type));
+			
 			if (e.getSource() instanceof AntennaView) {
-				int type = AreaAntennaSelectEvent.ANTENNA_SELECT;
+				type = AreaAntennaSelectEvent.ANTENNA_SELECT;
 				Antenna antenna = ((AntennaView) e.getSource()).getAntennaModel();
 				AreaView.this.fireSelectAntennaEvent(new AreaAntennaSelectEvent(AreaView.this, type, antenna));
 			}

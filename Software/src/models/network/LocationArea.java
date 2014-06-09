@@ -2,7 +2,7 @@ package models.network;
 
 import java.awt.Color;
 
-public class LocationArea {
+public class LocationArea implements Comparable<LocationArea>{
 	
 	private int id;
 	private Color color;
@@ -26,5 +26,14 @@ public class LocationArea {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+	
+	public boolean equals(LocationArea locationArea) {
+		return this.getId() == locationArea.getId();
+	}
+	
+	@Override
+	public int compareTo(LocationArea o) {
+		return new Integer(this.getId()).compareTo(new Integer(o.getId()));
 	}
 }

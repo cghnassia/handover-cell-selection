@@ -7,14 +7,15 @@ import models.network.Antenna;
 import views.area.AreaView;
 import views.menu.MenuView;
 
-public class AreaMobileMoveEvent extends AWTEvent {
+public class AreaMoveEvent extends AWTEvent {
 	
 	private int x;
 	private int y;
 	
-	public static final int MOBILE_MOVE = 1;
+	public static final int MOBILE_MOVE	= 0;
+	public static final int AREA_MOVE 	= 1;
 		
-	public AreaMobileMoveEvent(AreaView areaView, int type, int x, int y) {
+	public AreaMoveEvent(AreaView areaView, int type, int x, int y) {
 		super(areaView, type);
 		this.setX(x);
 		this.setY(y);

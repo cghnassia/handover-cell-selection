@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import models.area.AreaModel;
 import models.network.Antenna;
 import models.network.AntennaManager;
+import models.network.Cell;
 import models.network.CellGSM;
 import models.network.CellManager;
 import models.network.CellUMTS;
@@ -72,17 +73,46 @@ public class ParseXMLFile {
 						Element cellNode = (Element) cellList.item(k);
 						
 						if (cellNode.getAttribute("type").contains("GSM")) {
-							CellGSM cellGSM = new CellGSM(Integer.parseInt(cellNode.getAttribute("power")), Integer.parseInt(cellNode.getAttribute("frequency")), Integer.parseInt(cellNode.getAttribute("group")));
+							CellGSM cellGSM = new CellGSM(Integer.parseInt(cellNode.getAttribute("id")), Integer.parseInt(cellNode.getAttribute("power")), Integer.parseInt(cellNode.getAttribute("frequency")), Integer.parseInt(cellNode.getAttribute("offset")));
 							cellManager.addCellGSM(cellGSM);
 							antenna.setCellGSM(cellGSM);
 						}
 						else if(cellNode.getAttribute("type").contains("UMTS")) {
-							CellUMTS cellUMTS = new CellUMTS(Integer.parseInt(cellNode.getAttribute("power")), Integer.parseInt(cellNode.getAttribute("frequency")));
+							CellUMTS cellUMTS = new CellUMTS(Integer.parseInt(cellNode.getAttribute("id")), Integer.parseInt(cellNode.getAttribute("power")), Integer.parseInt(cellNode.getAttribute("frequency")));
 							cellManager.addCellUMTS(cellUMTS);
 							antenna.setCellUMTS(cellUMTS);
 						}
 					}
 				}
+			}
+			
+			
+			NodeList cellList = doc.getElementsByTagName("Cell");
+			
+			for(int i = 0; i < cellList.getLength(); i++) {
+						
+				if(!(cellList.item(i) instanceof Element)) {
+					continue;
+				}
+
+				Element cellNode = (Element) cellList.item(i);
+
+				Cell targetCell = cellManager.getCell(Integer.parseInt(cellNode.getAttribute("id")));
+				
+				NodeList neighborList = cellNode.getElementsByTagName("Neighbor");
+				
+				for (int j = 0; j< neighborList.getLength(); j++) {
+					
+					if(!(neighborList.item(j) instanceof Element)) {
+						continue;
+					}
+					
+					Element neighborNode = (Element) neighborList.item(j);
+					Cell neighborCell = cellManager.getCell(Integer.parseInt(neighborNode.getAttribute("cell")));
+					
+					targetCell.getNeighbors().add(neighborCell);
+				}
+				
 			}
 			
 			

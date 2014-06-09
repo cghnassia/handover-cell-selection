@@ -14,6 +14,10 @@ public class MenuControlEvent extends AWTEvent {
 	public static final int TYPE_CHECKBOX_GPRS = 4;
 	public static final int TYPE_CHECKBOX_EDGE = 5;
 	public static final int TYPE_CHECKBOX_UMTS = 6;
+	
+	public static final int TYPE_CHECKBOX_CELL_GSM = 7;
+	public static final int TYPE_GSM_NEIGHBORS = 8;
+	public static final int TYPE_UMTS_NEIGHBORS = 9;
 		
 	public MenuControlEvent(MenuView menuView, int type) {
 		super(menuView, type);
