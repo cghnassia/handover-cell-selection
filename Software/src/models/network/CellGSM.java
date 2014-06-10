@@ -3,6 +3,7 @@ package models.network;
 import java.util.Set;
 
 import models.mobile.Mobile;
+import models.utilities.Formulas;
 import config.MainConfig;
 
 public class CellGSM extends Cell {
@@ -18,6 +19,10 @@ public class CellGSM extends Cell {
 	public static final int MIN_RX_ACCESS_MIN = -90;
 	public static final int MAX_RX_ACCESS_MIN = 0;
 	
+	public static final int DEFAULT_RX_ACCESS_GRPS_MIN = -90;
+	public static final int MIN_RX_ACCESS_GPRS_MIN = -90;
+	public static final int MAX_RX_ACCESS_GPRS_MIN = 0;
+	
 	public static final int DEFAULT_RESELECT_OFFSET = 0; 
 	public static final int MIN_RESELECT_OFFSET = 0; 
 	public static final int MAX_RESELECT_OFFSET = 20; 
@@ -30,6 +35,7 @@ public class CellGSM extends Cell {
 	
 	private int offset;							//offset of the channel frequency
 	private int rxAccessMin;					//minimum
+	private int rxAccessGPRSMin;
 	private int reselectOffset;					//used to prioritize the cell
 	private int reselectHysteresis; 			//usually used only if not same Location Area (LA)
 
@@ -42,6 +48,7 @@ public class CellGSM extends Cell {
 		this.rxAccessMin = CellGSM.DEFAULT_RX_ACCESS_MIN;
 		this.reselectHysteresis = CellGSM.DEFAULT_RESELECT_HYSTERESIS;
 		this.reselectOffset = CellGSM.DEFAULT_RESELECT_OFFSET;
+		this.rxAccessGPRSMin = CellGSM.DEFAULT_RX_ACCESS_GRPS_MIN;
 	}
 	
 	public int getRadius() {
@@ -61,6 +68,19 @@ public class CellGSM extends Cell {
 		}
 		
 		return res;
+	}
+	
+	public int getC1PCriterion(int mobileStrength) {
+		return mobileStrength - this.rxAccessGPRSMin;
+	}
+	
+	//we don't use it right now
+	public int C31Criterion(int mobileStrength) {
+		return this.getC1PCriterion(mobileStrength);
+	}
+	
+	public int getC32Criterion(int mobileStrength, boolean isSameLocationArea) {
+		return this.getC2Criterion(mobileStrength, isSameLocationArea);
 	}
 
 	public int getOffset() {
@@ -94,7 +114,5 @@ public class CellGSM extends Cell {
 	public void setReselectHysteresis(int reselectHysteresis) {
 		this.reselectHysteresis = reselectHysteresis;
 	}
-	
-	
 
 }

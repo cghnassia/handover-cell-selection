@@ -127,7 +127,7 @@ public class Mobile implements Runnable {
 				}
 			}
 		}
-		else if (this.getService() != null && this.getService().getType() == Cell.CELLTYPE_UMTS) {
+		else if (this.getService().getType() == Cell.CELLTYPE_UMTS) {
 			this.getModuleUMTS().getActiveSet().clear();
 		}
 		
@@ -146,6 +146,10 @@ public class Mobile implements Runnable {
 		/*if(this.getService() != null) {
 			this.getService().setActive(this.isCalling() || this.isData());
 		}*/
+		
+		if(this.getService() == null || (! this.isCalling() && ! this.isData())){
+ 			this.getModuleUMTS().getActiveSet().clear();
+		}
 	}
 
 	public boolean isData() {
@@ -154,6 +158,14 @@ public class Mobile implements Runnable {
 
 	public void setData(boolean isData) {
 		this.isData = isData;
+		
+		/*if(this.getService() != null) {
+			this.getService().setActive(this.isCalling() || this.isData());
+		}*/
+		
+		if(this.getService() == null || (! this.isCalling() && ! this.isData())){
+			this.getModuleUMTS().getActiveSet().clear();
+		}
 	}
 	
 	public int getMeasureFrequency() {
@@ -280,8 +292,12 @@ public class Mobile implements Runnable {
 			serviceTmp.setActive(this.isCalling() || this.isData());
 		}
 		else {
-			this.isCalling = false;
-			this.isData = false;
+			this.setCalling(false);
+			this.setData(false);
+		}
+		
+		if(serviceTmp == null || serviceTmp.getType() == Cell.CELLTYPE_GSM) {
+			this.getModuleUMTS().getActiveSet().clear();
 		}
 		
 		this.setService(serviceTmp);

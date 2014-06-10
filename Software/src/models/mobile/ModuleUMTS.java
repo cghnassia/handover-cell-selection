@@ -236,7 +236,7 @@ public class ModuleUMTS extends Module{
 			}
 			
 			int pEcIo = pMeasurement.getNoiseAverage(this.getMobile().getMeasureCount());
-			if(bestActive == null || pCell.getSQualCriterion(pEcIo) - bestActive.getSQualCriterion(bestEcIo) > 0) { //Need a threshold ?
+			if(bestActive == null || pCell.getSQualCriterion(pEcIo) - bestActive.getSQualCriterion(bestEcIo) > -3) { //Threshold = 3
 				this.getActiveSet().add(pCell);
 			}
 		}
@@ -259,7 +259,7 @@ public class ModuleUMTS extends Module{
 			}
 			
 			int pEcIo = pMeasurement.getNoiseAverage(this.getMobile().getMeasureCount());
-			if(bestActive.getSQualCriterion(bestEcIo) - pCell.getSQualCriterion(pEcIo) > 0) { 
+			if(bestActive.getSQualCriterion(bestEcIo) - pCell.getSQualCriterion(pEcIo) > 3) { 
 				removedCells.add(pCell);
 			}
 		}
@@ -302,7 +302,7 @@ public class ModuleUMTS extends Module{
 		return this.doHandover();
 	}
 	
-	private int getEcIo(Cell measuredCell) {
+	public int getEcIo(Cell measuredCell) {
 		
 		double rscp = Formulas.toLinear(measuredCell.getStrength(this.getMobile().getX(), this.getMobile().getY()));
 		

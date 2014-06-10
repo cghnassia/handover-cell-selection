@@ -104,7 +104,14 @@ public class CellView extends JLabel {
 				g2d.setColor(MainConfig.CELLUMTS_COLOR);
 				g2d.drawPolygon(coordsx, coordsy, 6);
 			}
+			
+
+			/*if(this.getCellModel().getId() == 321) {
+				System.out.println("isActive : " + cellUMTS.isActive());
+				System.out.println("isInActiveSet" + cellUMTS.isInActiveSet());
+			}*/
 		}
+		
 	}
 
 }

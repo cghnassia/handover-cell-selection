@@ -24,31 +24,6 @@ public class ModuleGSM extends Module {
 		this.measurements = new MeasurementSet();
 	}
 	
-	/*public void updateModule() {
-		Mobile m = this.getMobile();
-		
-		if (this.getService() == null) {
-			this.doSelection();
-		}
-		else if (this.isCircuit() || this.isPacket()) {
-			if(this.isCircuit()) {
-				this.doHandover();
-			}
-			if (this.isPacket()) {
-				this.doDataReselection();
-			}
-		}
-		else {
-			this.doIdleReselection();
-		}
-		
-		//we remove selective cell if the strength is not good enough
-		if (this.getService() != null && this.getService().getStrength(m.getX(), m.getY()) < this.getService().getRxAccessMin()) {
-			this.setService(null);
-			this.measurements.removeAllCellMeasurements();
-		}
-	}*/
-	
 	public Set<CellGSM> getNeighbors() {
 		return this.neighbors;
 	}
@@ -272,10 +247,78 @@ public class ModuleGSM extends Module {
 	
 	@Override
 	public CellGSM doDataReselection() {
-		return this.doHandover();
+		
+		//calculate the best potential cell
+		CellGSM cCell = null;
+		CellMeasurement cMeasurement = null;
+		int cRxQual = 7;
+		if (this.getMobile().getService().getType() == Cell.CELLTYPE_GSM) { 
+			cCell = (CellGSM) this.getMobile().getService();
+			cMeasurement = this.measurements.getCellMeasurement(cCell);
+			
+			//If the selected cell is not good enough enough, we cannot stay with it
+			if (cMeasurement != null && cMeasurement.getSize() >= this.getMobile().getMeasureCount() ) {
+				
+				int strength = cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount());
+				if (cCell.getC1PCriterion(strength) < 0) {
+					cCell = null;
+					cMeasurement= null;
+				}
+				else {
+					cRxQual = Formulas.noiseToRxQUAL(cMeasurement.getNoiseAverage(this.getMobile().getMeasureCount()));
+				}
+			}
+		}
+	
+			
+		for (CellMeasurement pMeasurement: this.measurements.getCellMeasurements()) {
+						
+			if(pMeasurement == cMeasurement) {
+				continue;
+			}
+				
+			if (pMeasurement.getSize() < this.getMobile().getMeasureCount()) {
+				continue;
+			}
+				
+			CellGSM pCell = (CellGSM) pMeasurement.getCell();
+				
+			if (pCell.getC1PCriterion(pMeasurement.getStrengthAverage(this.getMobile().getMeasureCount())) >= 0) {
+				
+				//if the new cell is far from more than 35km, we don't use it
+				if(pCell.getDistance(this.getMobile().getX(), this.getMobile().getY()) > 35000) {
+					continue;
+				}
+				
+				int pRxQual = Formulas.noiseToRxQUAL(pMeasurement.getNoiseAverage(this.getMobile().getMeasureCount()));
+				
+				
+				if(cCell == null) { //If we don't have a GSM, nothing to compare at this point
+					cCell = pCell;
+					cMeasurement = pMeasurement;
+					cRxQual = pRxQual;
+				}	
+				else if(pRxQual < cRxQual) { //If we found a better quality, we do handover
+					cCell = pCell;
+					cMeasurement = pMeasurement;
+					cRxQual = pRxQual;
+				}
+				//If same quality but better strength (based on C2 criterion), we do handover
+				else if (pRxQual == cRxQual) {
+					if (pCell.getC32Criterion(pMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()), pCell.getAntenna().getLocationArea() == this.getMobile().getService().getAntenna().getLocationArea()) > cCell.getC32Criterion(cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()), cCell.getAntenna().getLocationArea() == this.getMobile().getService().getAntenna().getLocationArea())) {
+						cCell = pCell;
+						cMeasurement = pMeasurement;
+						cRxQual = pRxQual;
+					}
+				
+				}
+			}
+		}
+		
+		return cCell;
 	}
 	
-	private int getSINR(CellGSM measuredCell) {
+	public int getSINR(CellGSM measuredCell) {
 		
 		double numerator = Formulas.toLinear(measuredCell.getStrength(this.getMobile().getX(), this.getMobile().getY()));
 		double denominator = Formulas.toLinear(-121); // Thermal noise for GSM
@@ -307,6 +350,12 @@ public class ModuleGSM extends Module {
 		}
 		
 		return (int) Math.round(Formulas.toDB(numerator / denominator));
+	}
+	
+	public double getDataThroughput(CellGSM measuredCell) {
+		
+		int sinr = getSINR(measuredCell);
+		return Formulas.noiseToDataThrougput(sinr, 6);
 	}
 
 }

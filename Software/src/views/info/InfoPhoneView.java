@@ -1,17 +1,154 @@
 package views.info;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 
+import models.application.ApplicationModel;
 import models.info.InfoModel;
+import models.mobile.Mobile;
+import models.network.Cell;
+import models.network.CellGSM;
+import models.network.CellUMTS;
+import models.utilities.Formulas;
 
-public class InfoPhoneView extends JPanel {
+public class InfoPhoneView extends JPanel implements Runnable {
+	
+	private Mobile mobile;
+	
+	private JLabel labelAntenna;
+	private JLabel labelCellType;
+	
+	private JLabel labelPower;
+	private JProgressBar barPower;
+	private JLabel valuePower;
+	
+	private JLabel labelInterference;
+	private JProgressBar barInterference;
+	private JLabel valueInterference;
+	
+	private JLabel labelRate;
+	private JProgressBar barRate;
+	private JLabel valueRate;
 	
 	public InfoPhoneView() {
 		
+		super(new GridLayout(5, 1));
+		
+		this.mobile = Mobile.Instance();
+		
+		JPanel panelTop1 = new JPanel(new FlowLayout());
+		this.labelAntenna = new JLabel(" Antenna : ");
+		this.labelCellType = new JLabel(" Cellule : ");
+		panelTop1.add(this.labelAntenna, BorderLayout.WEST);
+		panelTop1.add(this.labelCellType, BorderLayout.EAST);
+		
+		JPanel panelTop2 = new JPanel(new FlowLayout());
+		this.labelPower = new JLabel(" Rx received ");
+		this.labelPower.setPreferredSize(new Dimension(80, 20));
+		this.barPower = new JProgressBar(-120, -20);
+		this.barPower.setPreferredSize(new Dimension(135, 20));
+		this.valuePower = new JLabel(" 0 dBm");
+		this.valuePower.setPreferredSize(new Dimension(65, 20));
+		panelTop2.add(this.labelPower);
+		panelTop2.add(this.barPower);
+		panelTop2.add(this.valuePower);
+		
+		JPanel panelTop3 = new JPanel(new FlowLayout());
+		this.labelInterference = new JLabel(" SINR ");
+		this.labelInterference.setPreferredSize(new Dimension(80, 20));
+		this.barInterference = new JProgressBar(0, 100);
+		this.barInterference.setPreferredSize(new Dimension(135, 20));
+		this.valueInterference = new JLabel(" 0 dBm");
+		this.valueInterference.setPreferredSize(new Dimension(65, 20));
+		panelTop3.add(this.labelInterference);
+		panelTop3.add(this.barInterference);
+		panelTop3.add(this.valueInterference);
+		
+		JPanel panelTop4 = new JPanel(new FlowLayout());
+		this.labelRate = new JLabel(" Througput ");
+		this.labelRate.setPreferredSize(new Dimension(80, 20));
+		this.barRate = new JProgressBar(0, 128);
+		this.barRate.setPreferredSize(new Dimension(135, 20));
+		this.valueRate = new JLabel(" 0 kb/s");
+		this.valueRate.setPreferredSize(new Dimension(65, 20));
+		
+		panelTop4.add(this.labelRate);
+		panelTop4.add(this.barRate);
+		panelTop4.add(this.valueRate);
+		
+		
+		this.add(panelTop1);
+		this.add(panelTop2);
+		this.add(panelTop3);
+		this.add(panelTop4);
+		
 		this.setPreferredSize(new Dimension(300, InfoModel.Instance().getInfoHeight()));
-		this.setBackground(new Color(0, 0, 255));
+		
+		this.update();
+	}
+	
+	private void update() {
+
+		if(mobile.getService() != null) {
+			
+			Cell service = this.mobile.getService();
+			
+			//Top1
+			this.labelAntenna.setText("Antenna : " + service.getAntenna().getId());
+			if (service.getType() == Cell.CELLTYPE_GSM) {
+				this.labelCellType.setText(" (Cellule : GSM) ");
+			}
+			else {
+				this.labelCellType.setText(" (Cellule : UMTS) ");
+			}
+			
+			//Top2
+			this.valuePower.setText(" " + service.getStrength(this.mobile.getX(), this.mobile.getY()) + " dBm");
+			this.barPower.setValue(service.getStrength(this.mobile.getX(), this.mobile.getY()));
+			
+			//Top3
+			if (service.getType() == Cell.CELLTYPE_GSM) {
+				this.labelInterference.setText(" SINR ");
+				this.valueInterference.setText(" " + this.mobile.getModuleGSM().getSINR((CellGSM)service) + " dB (" + Formulas.noiseToRxQUAL(this.mobile.getModuleGSM().getSINR((CellGSM)service))  + ")");
+				this.barInterference.setValue(this.mobile.getModuleGSM().getSINR((CellGSM)service));
+			}
+			else {
+				this.labelInterference.setText(" Ec/Io ");
+				this.valueInterference.setText(" " + this.mobile.getModuleUMTS().getEcIo((CellUMTS) service) + " dB");
+				this.barInterference.setValue(this.mobile.getModuleUMTS().getEcIo((CellUMTS) service));
+			}
+			
+			//Top4
+			if (service.getType() == Cell.CELLTYPE_GSM) {
+				
+				this.labelRate.setEnabled(this.mobile.isData());
+				this.valueRate.setEnabled(this.mobile.isData());
+				this.barRate.setEnabled(this.mobile.isData());
+				
+				if(this.mobile.isData()) {
+					this.valueRate.setText(" " + Math.round(this.mobile.getModuleGSM().getDataThroughput((CellGSM) service)) + " kb/s");
+					this.barRate.setValue((int) Math.round(this.mobile.getModuleGSM().getDataThroughput((CellGSM) service)));
+				}
+			}
+		}
+	}
+
+	@Override
+	public void run() {
+		while(true) {
+			try {
+				this.update();
+				Thread.currentThread().sleep(1000 / ApplicationModel.Instance().getFpsRate());
+			}
+			catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

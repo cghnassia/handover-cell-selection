@@ -15,15 +15,21 @@ public class InfoView extends JPanel {
 	private InfoPhoneView infoPhoneView;
 
 	public InfoView(InfoModel infoModel) {
+		
+		this.infoConsoleView = new InfoConsoleView();
+		this.infoPhoneView = new InfoPhoneView();
 	
 		this.setInfoModel(infoModel);
-		this.setInfoConsoleView(new InfoConsoleView());
-		this.setInfoPhoneView(new InfoPhoneView());
+		this.setInfoConsoleView(this.infoConsoleView);
+		this.setInfoPhoneView(this.infoPhoneView);
 		this.setPreferredSize(new Dimension(infoModel.getInfoWidth(), infoModel.getInfoHeight()));
 		
 		this.setLayout(new BorderLayout());
 		this.add(this.getInfoConsoleView(), BorderLayout.CENTER);
 		this.add(this.getInfoPhoneView(), BorderLayout.WEST);
+		
+		Thread threadInfoPhoneView = new Thread(this.infoPhoneView, "InfoPhoneView");
+		threadInfoPhoneView.start();
 	}
 
 	public InfoModel getInfoModel() {

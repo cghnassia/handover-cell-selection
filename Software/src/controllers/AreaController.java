@@ -196,7 +196,6 @@ public class AreaController implements Runnable {
 	
 	@Override
 	public void run() {
-		
 		while(true) {
 			try {
 				Mobile.Instance().updatePosition();

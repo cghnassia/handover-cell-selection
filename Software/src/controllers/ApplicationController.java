@@ -170,7 +170,7 @@ public class ApplicationController  {
 					AreaController areaController = AreaController.Instance();
 					areaController.getAreaView().updateCell((Cell) e.getSource());
 					
-					System.out.println(Mobile.Instance().getModuleUMTS().getActiveSet());
+					//System.out.println("Active Set : " + Mobile.Instance().getModuleUMTS().getActiveSet());
 					
 				}
 
@@ -179,8 +179,7 @@ public class ApplicationController  {
 					AreaController areaController = AreaController.Instance();
 					areaController.getAreaView().updateCell((Cell) e.getSource());	
 					
-					System.out.println(Mobile.Instance().getModuleUMTS().getActiveSet());
-
+					//System.out.println("Removed from Active Set : " + Mobile.Instance().getModuleUMTS().getActiveSet());
 				}
 			});
 		}

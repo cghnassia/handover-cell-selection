@@ -43,6 +43,36 @@ public class Formulas {
 		return res;
 	}
 	
+	//Only GPRS right now ? What about EDGE
+	public static double noiseToDataThrougput(int db, int timeSlots) {
+		
+		double CS1 = 9.05; //kbits/s
+		double CS2 = 13.4;
+		double CS3 = 15.6;
+		double CS4 = 21.4;
+		
+		double codingScheme = 0;
+		switch (noiseToRxQUAL(db)) {
+			case 0:
+				codingScheme = CS4;
+				break;
+			case 1:
+				codingScheme = CS3;
+				break;
+			case 2:
+				codingScheme = CS2;
+				break;
+			case 3:
+				codingScheme = CS1;
+				break;
+			default:
+				codingScheme = 0;
+				break;
+		}
+		
+		return codingScheme * timeSlots;
+	}
+	
 	
 	//For Later
 	/*public static double SIRtoBER(double sir, int algorithm) {

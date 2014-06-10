@@ -45,7 +45,7 @@ public class ActiveSet extends HashSet<CellUMTS> {
 	}
 	
 	//@Override
-	/*public boolean removeAll(Collection<?> c) {
+	public boolean removeAll(Collection<?> c) {
 		
 		for (Object o: c) {
 			if(this.contains(o)) {
@@ -55,15 +55,13 @@ public class ActiveSet extends HashSet<CellUMTS> {
 		}
 		
 		return super.removeAll(c);
-	}*/
+	}
 	
 	@Override
 	public void clear() {
 		for (Object o: this) {
-			if(this.contains(o)) {
-				CellUMTS cellUMTS = (CellUMTS) o;
-				cellUMTS.setInActiveSet(false);
-			}
+			CellUMTS cellUMTS = (CellUMTS) o;
+			cellUMTS.setInActiveSet(false);
 		}
 		
 		super.clear();

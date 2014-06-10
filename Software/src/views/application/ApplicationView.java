@@ -19,7 +19,7 @@ import models.network.CellGSM;
 import models.network.CellUMTS;
 import config.MainConfig;
 
-public class ApplicationView extends JFrame implements Runnable {
+public class ApplicationView extends JFrame  {
 	
 	private ApplicationModel applicationModel;
 	
@@ -61,9 +61,9 @@ public class ApplicationView extends JFrame implements Runnable {
 		this.centerPanel.add(infoView, BorderLayout.SOUTH);
 	}
 	
-	@Override
+	/*@Override
 	public void run() {
-		/*while(true) {
+		while(true) {
 			/*try {
 				this.area.refreshMobile();
 				this.area.refreshCells();
@@ -72,6 +72,6 @@ public class ApplicationView extends JFrame implements Runnable {
 			catch(InterruptedException e) {
 				e.printStackTrace();
 			}
-		}*/
-	}
+		}
+	}*/
 }
