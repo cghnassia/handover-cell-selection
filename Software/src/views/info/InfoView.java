@@ -41,7 +41,7 @@ public class InfoView extends JPanel {
 	}
 
 	public InfoConsoleView getInfoConsoleView() {
-		return infoConsoleView;
+		return this.infoConsoleView;
 	}
 
 	public void setInfoConsoleView(InfoConsoleView infoConsoleView) {
@@ -49,7 +49,7 @@ public class InfoView extends JPanel {
 	}
 
 	public InfoPhoneView getInfoPhoneView() {
-		return infoPhoneView;
+		return this.infoPhoneView;
 	}
 
 	public void setInfoPhoneView(InfoPhoneView infoPhoneView) {

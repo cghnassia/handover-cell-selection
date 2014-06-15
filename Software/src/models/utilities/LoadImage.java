@@ -12,13 +12,16 @@ public class LoadImage {
 	public static final String MOBILE = "img/mobile.png";
 	public static final String ANTENNA = "img/antenna.png";
 	
+	public static final String BUTTON_POWER_ON = "img/button_power_on.png";
+	public static final String BUTTON_POWER_OFF = "img/button_power_off.png";
+	
 	public static final String BUTTON_CALL_ON = "img/button_call_on.png";
 	public static final String BUTTON_CALL_OFF = "img/button_call_off.png";
-	public static final String BUTTON_CALL_INACTIVE = "img/button_call_inactive.png";
+	//public static final String BUTTON_CALL_INACTIVE = "img/button_call_inactive.png";
 	
 	public static final String BUTTON_DATA_ON = "img/button_data_on.png";
 	public static final String BUTTON_DATA_OFF = "img/button_data_off.png";
-	public static final String BUTTON_DATA_INACTIVE = "img/button_data_inactive.png";
+	//public static final String BUTTON_DATA_INACTIVE = "img/button_data_inactive.png";
 	
 	private LoadImage() {
 		//classe statique

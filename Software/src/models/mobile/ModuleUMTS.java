@@ -3,8 +3,11 @@ package models.mobile;
 import java.util.HashSet;
 import java.util.Set;
 
+import views.info.InfoConsoleView;
+
 import com.sun.xml.internal.fastinfoset.algorithm.BuiltInEncodingAlgorithm.WordListener;
 
+import controllers.InfoController;
 import models.network.Cell;
 import models.network.CellGSM;
 import models.network.CellManager;
@@ -48,6 +51,11 @@ public class ModuleUMTS extends Module{
 		}
 		for (CellUMTS cellUMTS: targets) {
 			
+			if(! cellUMTS.isEnabled()) {
+				this.measurements.removeCellMeasurement(cellUMTS);
+				continue;
+			}
+			
 			int strength = cellUMTS.getStrength(this.getMobile().getX(), this.getMobile().getY());
 			
 			if(strength > CellUMTS.COVERAGE_STRENGTH) {
@@ -62,7 +70,7 @@ public class ModuleUMTS extends Module{
 		if(this.getMobile().getService() != null && this.getMobile().getService().getType() == Cell.CELLTYPE_UMTS) {
 			int strength = this.getMobile().getService().getStrength(this.getMobile().getX(), this.getMobile().getY());
 			
-			Measure measure = new Measure(strength, getEcIo(this.getMobile().getService()), System.currentTimeMillis());
+			Measure measure = new Measure(strength, this.getEcIo((CellUMTS) this.getMobile().getService()), System.currentTimeMillis());
 			this.measurements.addMeasure(this.getMobile().getService(), measure);
 		}	
 		
@@ -132,6 +140,18 @@ public class ModuleUMTS extends Module{
 			}
 		}
 		
+		if (cCell != null) {
+			if(this.getMobile().getService() == null) {  
+				InfoController.Instance().publishConsole("Selection", "UMTS Cell at Antenna " + cCell.getAntenna().getId() + " has been selected (strength average is " + cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount())  + " dBm, Ec/Io is " + cMeasurement.getNoiseAverage(this.getMobile().getMeasureCount()) + ")");
+			}
+			else {
+				String message = "Moved from";
+				message += " GSM Cell at Antenna " + this.getMobile().getService().getAntenna().getId();
+				message += " to UMTS Cell at Antenna " + cCell.getAntenna().getId() + " (strength average is " + cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()) + " dBm, Ec/Io is " + cMeasurement.getNoiseAverage(this.getMobile().getMeasureCount()) + ")";
+				InfoController.Instance().publishConsole("Idle reselection (inter-system)", message);
+			}
+		}
+		
 		return cCell;
 	}
 
@@ -155,6 +175,7 @@ public class ModuleUMTS extends Module{
 			}
 			
 			for (CellMeasurement pMeasurement: this.measurements.getCellMeasurements()) {
+				
 
 				if(pMeasurement.getSize() >= this.getMobile().getMeasureCount()) {
 
@@ -183,6 +204,14 @@ public class ModuleUMTS extends Module{
 			}
 		}
 		
+		if(cCell != null && cCell != this.getMobile().getService()) {
+			String message = "Moved from";
+			message += " UMTS Cell at Antenna " + this.getMobile().getService().getAntenna().getId();
+			message += " to UMTS Cell at Antenna " + cCell.getAntenna().getId() + " (strength average is " + cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()) + " dBm, Ec/Io is " + cMeasurement.getNoiseAverage(this.getMobile().getMeasureCount()) + ")";;
+			InfoController.Instance().publishConsole("Idle reselection (intra-system)", message);
+		}
+		
+		
 		return cCell;
 	}
 
@@ -192,23 +221,33 @@ public class ModuleUMTS extends Module{
 		HashSet<CellUMTS> removedCells;
 		
 		//If the service is not in the active set, we should insert in
-		if(this.getMobile().getService().getType() == Cell.CELLTYPE_UMTS) {
+		if(this.getMobile().getService().getType() == Cell.CELLTYPE_UMTS && ! this.getActiveSet().contains(this.getMobile().getService())) {
 			CellUMTS service = (CellUMTS) this.getMobile().getService();
 			this.getActiveSet().add(service);
+			//InfoController.Instance().publishConsole("Active set", "UMTS Cell at Antenna " + service.getAntenna().getId() + " has been added to active set (service cell)");
 		}
 		
 		//We remove cell which are not the minimum number of measures from the active set
 		removedCells = new HashSet<>();
 		for(CellUMTS active: this.getActiveSet()) {
 			CellMeasurement cMeasurement = this.measurements.getCellMeasurement(active);
-			if (cMeasurement == null || cMeasurement.getSize() < this.getMobile().getMeasureCount()) {
+			
+			if(! active.isEnabled()) {
 				removedCells.add(active);
+			}
+			else if (cMeasurement == null || cMeasurement.getSize() < this.getMobile().getMeasureCount()) {
+				removedCells.add(active);
+				InfoController.Instance().publishConsole("Active set", "UMTS Cell at Antenna " + active.getAntenna().getId() + " has been removed from active set (not enough measurements)");
 			}
 		}
 		this.getActiveSet().removeAll(removedCells);
 		
 		//Then we do link addition
 		for(CellUMTS pCell: this.getNeighbors()) {
+			
+			if(! pCell.isEnabled()) {
+				continue;
+			}
 			
 			CellUMTS bestActive = this.getBestActive();
 			int bestEcIo = 0;
@@ -236,8 +275,9 @@ public class ModuleUMTS extends Module{
 			}
 			
 			int pEcIo = pMeasurement.getNoiseAverage(this.getMobile().getMeasureCount());
-			if(bestActive == null || pCell.getSQualCriterion(pEcIo) - bestActive.getSQualCriterion(bestEcIo) > -3) { //Threshold = 3
+			if(bestActive == null || pCell.getSQualCriterion(pEcIo) - bestActive.getSQualCriterion(bestEcIo) > -bestActive.getActiveSetRange()) {
 				this.getActiveSet().add(pCell);
+				InfoController.Instance().publishConsole("Active set", "UMTS Cell at Antenna " + pCell.getAntenna().getId() + " has been added to active set (strength is " + pMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()) + "dBm, Ec/Io is " + pMeasurement.getNoiseAverage(this.getMobile().getMeasureCount())  + " dB)");
 			}
 		}
 		
@@ -250,17 +290,20 @@ public class ModuleUMTS extends Module{
 			
 			CellMeasurement pMeasurement = this.measurements.getCellMeasurement(pCell);
 			if(pMeasurement == null || pMeasurement.getSize() < this.getMobile().getMeasureCount()) {
-				removedCells.remove(pCell);
+				removedCells.add(pCell);
+				InfoController.Instance().publishConsole("Active set", "UMTS Cell at Antenna " + pCell.getAntenna().getId() + " has been removed from active set (not enough measurements)");
 			}
 			
 			int strength =  pMeasurement.getStrengthAverage(this.getMobile().getMeasureCount());
 			if (pCell.getSRxLevCriterion(strength) < 0) {
 				removedCells.add(pCell);
+				InfoController.Instance().publishConsole("Active set", "UMTS Cell at Antenna " + pCell.getAntenna().getId() + " has been removed from active set (strength is " + pMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()) + "dBm, Ec/Io is " + pMeasurement.getNoiseAverage(this.getMobile().getMeasureCount())  + " dB)");
 			}
 			
 			int pEcIo = pMeasurement.getNoiseAverage(this.getMobile().getMeasureCount());
-			if(bestActive.getSQualCriterion(bestEcIo) - pCell.getSQualCriterion(pEcIo) > 3) { 
+			if(! removedCells.contains(pCell) && bestActive.getSQualCriterion(bestEcIo) - pCell.getSQualCriterion(pEcIo) > bestActive.getActiveSetRange()) {
 				removedCells.add(pCell);
+				InfoController.Instance().publishConsole("Active set", "UMTS Cell at Antenna " + pCell.getAntenna().getId() + " has been removed from active set (strength is " + pMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()) + "dBm, Ec/Io is " + pMeasurement.getNoiseAverage(this.getMobile().getMeasureCount())  + " dB)");
 			}
 		}
 		this.getActiveSet().removeAll(removedCells);
@@ -286,6 +329,8 @@ public class ModuleUMTS extends Module{
 				if(bestMonitored.getSQualCriterion(bestMonitoredEcIo) > worstActive.getSQualCriterion(worstActivetEcIo)) {
 					this.getActiveSet().remove(worstActive);
 					this.getActiveSet().add(bestMonitored);
+					InfoController.Instance().publishConsole("Active set", "UMTS Cell at Antenna " + worstActive.getAntenna().getId() + "(Ec/Io is " + worstActivetEcIo + "dB) has been removed  " + " and UMTS Cell at Antenna " + bestMonitored.getAntenna().getId() + "(Ec/Io is " + bestMonitoredEcIo + "dB) has been added"  );
+
 				}
 				else {
 					isSwitch = false;
@@ -302,17 +347,27 @@ public class ModuleUMTS extends Module{
 		return this.doHandover();
 	}
 	
-	public int getEcIo(Cell measuredCell) {
+	public int getEcIo(CellUMTS measuredCell) {
 		
 		double rscp = Formulas.toLinear(measuredCell.getStrength(this.getMobile().getX(), this.getMobile().getY()));
 		
 		double rssi = 0;
 		for(CellUMTS cellUMTS: CellManager.Instance().getCellsUMTS()) {
+			
+			if(cellUMTS.getFrequency() != measuredCell.getFrequency()) {
+				continue;
+			}
+			
 			rssi += Formulas.toLinear(cellUMTS.getStrength(this.getMobile().getX(), this.getMobile().getY()));
 		}
-			
-		return (int) Math.round(Formulas.toDB(rscp/rssi));
 		
+		return (int) Math.round(Formulas.toDB(256 * (double) rscp/ (double) rssi));
+		
+	}
+	
+	public double getDataThroughput(CellUMTS measuredCell) {
+		int sinr = (int) (this.getEcIo(measuredCell) - 10 * Math.log10(256));
+		return Formulas.noiseToUMTSDataThroughput(sinr);
 	}
 	
 	private CellUMTS getBestActive() {
@@ -366,6 +421,10 @@ public class ModuleUMTS extends Module{
 		
 		for(CellUMTS cMonitored: this.getActiveSet()) {
 			
+			if(! cMonitored.isEnabled()) {
+				continue;
+			}
+			
 			if(this.getActiveSet().contains(cMonitored)) {
 				continue;
 			}
@@ -398,6 +457,10 @@ public class ModuleUMTS extends Module{
 		int worstEcIo = 0;
 		
 		for(CellUMTS cMonitored: this.getActiveSet()) {
+			
+			if(! cMonitored.isEnabled()) {
+				continue;
+			}
 			
 			if(this.getActiveSet().contains(cMonitored)) {
 				continue;

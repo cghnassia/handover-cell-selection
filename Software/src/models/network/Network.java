@@ -11,10 +11,10 @@ public class Network {
 	
 	private Network() {
 		
-		this.setGSM(true);
+		/*this.setGSM(true);
 		this.setGPRS(true);
 		this.setEDGE(true);
-		this.setUMTS(true);
+		this.setUMTS(true);*/
 	}
 	
 	public static Network Instance() {
@@ -26,7 +26,7 @@ public class Network {
 		return Network.network;
 	}
 
-	public boolean isGSM() {
+	/*public boolean isGSM() {
 		return this.isGSM;
 	}
 
@@ -63,6 +63,6 @@ public class Network {
 
 	public void setEDGE(boolean isEDGE) {
 		this.isEDGE = isEDGE;
-	}
+	}*/
 
 }

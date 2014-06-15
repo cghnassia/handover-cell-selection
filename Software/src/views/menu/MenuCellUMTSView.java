@@ -31,11 +31,12 @@ import models.network.AntennaManager;
 import models.network.Cell;
 import models.network.CellGSM;
 import models.network.CellManager;
+import models.network.CellUMTS;
 import models.utilities.SpringUtilities;
 
-public class MenuCellGSMView extends JPanel {
+public class MenuCellUMTSView extends JPanel {
 	
-	private JCheckBox checkbox_GSM;
+	private JCheckBox checkbox_UMTS;
 	
 	private JLabel label_power;
 	private JSlider slider_power;
@@ -45,65 +46,45 @@ public class MenuCellGSMView extends JPanel {
 	private JSlider slider_rxAccessMin;
 	private JLabel value_rxAccessMin;
 	
-	private JLabel label_reselectOffset;
-	private JSlider slider_reselectOffset;
-	private JLabel value_reselectOffset;
+	private JLabel label_qualityMin;
+	private JSlider slider_qualityMin;
+	private JLabel value_qualityMin;
 	
-	private JLabel label_reselectHysteresis;
-	private JSlider slider_reselectHysteresis;
-	private JLabel value_reselectHysteresis;
+	private JLabel label_activeSetRange;
+	private JSlider slider_activeSetRange;
+	private JLabel value_activeSetRange;
 	
 	private JComboBox<ComboOption> combo_frequency;
-	
-	private JLabel label_frequencyOffset;
-	private JComboBox<ComboOption> combo_frequencyOffset;
-	
-	private JLabel label_QSI;
-	private JComboBox<ComboOption> combo_QSI;
-	
-	private JLabel label_QSC;
-	private JComboBox<ComboOption> combo_QSC;
 	
 	private JLabel label_neighbors;
 	private JList<ComboOption> list_neighbors;
 	private DefaultListModel<ComboOption> list_neighbors_model;
 	
 	
-	public MenuCellGSMView() {
+	public MenuCellUMTSView() {
 		
-		this.checkbox_GSM = new JCheckBox("GSM", true);
+		this.checkbox_UMTS = new JCheckBox("UMTS", true);
 		
 		this.label_power = new JLabel("Power");
-		this.slider_power = new JSlider(CellGSM.MIN_STRENGTH, CellGSM.MAX_STRENGTH, CellGSM.DEFAULT_STRENGTH);
+		this.slider_power = new JSlider(CellUMTS.MIN_STRENGTH, CellUMTS.MAX_STRENGTH, CellUMTS.DEFAULT_STRENGTH);
 		this.value_power = new JLabel(CellGSM.DEFAULT_STRENGTH + " dBm");
 		
 		this.label_rxAccessMin = new JLabel("Access min");
-		this.slider_rxAccessMin = new JSlider(CellGSM.MIN_RX_ACCESS_MIN, CellGSM.MAX_RX_ACCESS_MIN, CellGSM.DEFAULT_RX_ACCESS_MIN);
+		this.slider_rxAccessMin = new JSlider(CellUMTS.MIN_QRXLEV_MIN, CellUMTS.MAX_QRXLEV_MIN, CellUMTS.DEFAULT_QRXLEV_MIN);
 		this.value_rxAccessMin= new JLabel(CellGSM.DEFAULT_RX_ACCESS_MIN + " dBm");
 		
-		this.label_reselectOffset = new JLabel("Resel. Offset");
-		this.slider_reselectOffset = new JSlider(CellGSM.MIN_RESELECT_OFFSET, CellGSM.MAX_RESELECT_OFFSET ,CellGSM.DEFAULT_RESELECT_OFFSET);
-		this.value_reselectOffset = new JLabel(CellGSM.DEFAULT_RESELECT_OFFSET + " dBm");
+		this.label_qualityMin = new JLabel("Quality min");
+		this.slider_qualityMin = new JSlider(CellUMTS.MIN_QQUAL_MIN, CellUMTS.MAX_QQUAL_MIN, CellUMTS.DEFAULT_QQUAL_MIN);
+		this.value_qualityMin = new JLabel(CellGSM.DEFAULT_RESELECT_OFFSET + " dBm");
 		
-		this.label_reselectHysteresis= new JLabel("Hysteresis");
-		this.slider_reselectHysteresis = new JSlider(CellGSM.MIN_RESELECT_HYSTERESIS, CellGSM.MAX_RESELECT_HYSTERESIS, CellGSM.DEFAULT_RESELECT_HYSTERESIS);
-		this.value_reselectHysteresis = new JLabel(CellGSM.DEFAULT_RESELECT_HYSTERESIS + " dBm");
+		this.label_activeSetRange = new JLabel("Active range");
+		this.slider_activeSetRange = new JSlider(CellUMTS.MIN_ACTIVESET_RANGE, CellUMTS.MAX_ACTIVESET_RANGE, CellUMTS.DEFAULT_ACTIVESET_RANGE);
+		this.value_activeSetRange = new JLabel(CellUMTS.DEFAULT_ACTIVESET_RANGE + " dBm");
 		
-		ComboOption[] options_frequency = {new ComboOption(900, "900 MHz"), new ComboOption(1800, "1800 MHz")};
+		ComboOption[] options_frequency = {new ComboOption(900, "900 MHz"), new ComboOption(2100, "2100 MHz")};
 		this.combo_frequency = new JComboBox<>(options_frequency);
 		
-		this.label_frequencyOffset = new JLabel("Offset");
-		ComboOption[] options_frequencyOffset = {new ComboOption(0, "0"), new ComboOption(1, "1"),  new ComboOption(2, "2"),  new ComboOption(3, "3"),  new ComboOption(4, "4"),  new ComboOption(5, "5"),  new ComboOption(6, "6"), new ComboOption(7, "7"),  new ComboOption(8, "8"),  new ComboOption(9, "9"),  new ComboOption(10, "10"),  new ComboOption(11, "11"),  new ComboOption(12, "12"), new ComboOption(13, "13"),  new ComboOption(14, "14"),  new ComboOption(15, "15")};
-		this.combo_frequencyOffset = new JComboBox<>(options_frequencyOffset);
-		
-		ComboOption[] options_QS = {new ComboOption(0, "0"), new ComboOption(1, "1"), new ComboOption(2, "2"), new ComboOption(3, "3"), new ComboOption(4, "4"), new ComboOption(5, "5"), new ComboOption(6, "6"), new ComboOption(7, "7"), new ComboOption(8, "8"), new ComboOption(9, "9"), new ComboOption(10, "10"), new ComboOption(11, "11"), new ComboOption(12, "12"), new ComboOption(13, "13"), new ComboOption(14, "14"), new ComboOption(15, "15")};
-		this.label_QSI = new JLabel("QSI");
-		this.combo_QSI = new JComboBox<>(options_QS);
-		this.label_QSC = new JLabel("QSC");
-		this.combo_QSC = new JComboBox<>(options_QS);
-		
 		this.label_neighbors = new JLabel("neighbors    ");
-		//String[] options_neighbors = {"Antenna 13 - GSM", "Antenna 14 - GSM", "Antenna 15 - GSM", "Antenna 16 - GSM"};
 		this.list_neighbors_model = new DefaultListModel<>();
 		this.list_neighbors = new JList<>(this.list_neighbors_model);
 		this.fillNeighbors(null);
@@ -119,13 +100,9 @@ public class MenuCellGSMView extends JPanel {
 		frequencyPanel.add(new JLabel(""), BorderLayout.WEST);
 		frequencyPanel.add(this.combo_frequency, BorderLayout.CENTER);
 		
-		JPanel frequencyOffsetPanel = new JPanel(new BorderLayout());
-		frequencyOffsetPanel.add(this.label_frequencyOffset, BorderLayout.WEST);
-		frequencyOffsetPanel.add(this.combo_frequencyOffset, BorderLayout.CENTER);
+		topPanel.add(this.checkbox_UMTS, BorderLayout.WEST);
+		topPanel.add(frequencyPanel, BorderLayout.EAST);
 		
-		topPanel.add(this.checkbox_GSM);
-		topPanel.add(frequencyPanel);
-		topPanel.add(frequencyOffsetPanel);
 		
 		JPanel centerPanel = new JPanel(new SpringLayout());
 		
@@ -137,27 +114,27 @@ public class MenuCellGSMView extends JPanel {
 		centerPanel.add(this.slider_rxAccessMin);
 		centerPanel.add(this.value_rxAccessMin);
 		
-		centerPanel.add(this.label_reselectOffset);
-		centerPanel.add(this.slider_reselectOffset);
-		centerPanel.add(this.value_reselectOffset);
+		centerPanel.add(this.label_qualityMin);
+		centerPanel.add(this.slider_qualityMin);
+		centerPanel.add(this.value_qualityMin);
 		
-		centerPanel.add(this.label_reselectHysteresis);
-		centerPanel.add(this.slider_reselectHysteresis);
-		centerPanel.add(this.value_reselectHysteresis);
+		centerPanel.add(this.label_activeSetRange);
+		centerPanel.add(this.slider_activeSetRange);
+		centerPanel.add(this.value_activeSetRange);
 		
 		SpringUtilities.makeGrid(centerPanel, 4, 3, 5, 5, 0, 0);
 		
-		JPanel qsiPanel = new JPanel(new FlowLayout());
-		qsiPanel.add(label_QSI, BorderLayout.WEST);
+		/*JPanel qsiPanel = new JPanel(new FlowLayout());
+		qsiPanel.add(new JLabel("QSI"), BorderLayout.WEST);
 		qsiPanel.add(this.combo_QSI, BorderLayout.CENTER);
 		
 		JPanel qscPanel = new JPanel(new BorderLayout());
-		qscPanel.add(label_QSC, BorderLayout.WEST);
+		qscPanel.add(new JLabel("QSC"), BorderLayout.WEST);
 		qscPanel.add(this.combo_QSC, BorderLayout.CENTER);
 		
 		JPanel bottomTopPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
 		bottomTopPanel.add(qsiPanel);
-		bottomTopPanel.add(qscPanel);
+		bottomTopPanel.add(qscPanel);*/
 		
 		
 		JPanel bottomBottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 10));
@@ -169,7 +146,7 @@ public class MenuCellGSMView extends JPanel {
 		bottomBottomPanel.add(neighborsPanel);
 		
 		JPanel bottomPanel = new JPanel(new BorderLayout());
-		bottomPanel.add(bottomTopPanel, BorderLayout.NORTH);
+		//bottomPanel.add(bottomTopPanel, BorderLayout.NORTH);
 		bottomPanel.add(bottomBottomPanel, BorderLayout.SOUTH);
 		
 		this.add(topPanel, BorderLayout.NORTH);
@@ -182,7 +159,7 @@ public class MenuCellGSMView extends JPanel {
 		return this.slider_power;
 	}
 	
-	public JLabel getLabelPower() {
+	public JLabel getValuePower() {
 		return this.value_power;
 	}
 	
@@ -194,44 +171,28 @@ public class MenuCellGSMView extends JPanel {
 		return this.value_rxAccessMin;
 	}
 	
-	public JSlider getSliderReselectOffset() {
-		return this.slider_reselectOffset;
+	public JSlider getSliderQualityMin() {
+		return this.slider_qualityMin;
 	}
 	
-	public JLabel getValueReselectOffset() {
-		return this.value_reselectOffset;
+	public JLabel getValueQualityMin() {
+		return this.value_qualityMin;
 	}
 	
-	public JSlider getSliderReselectHysteresis() {
-		return this.slider_reselectHysteresis;
+	public JSlider getSliderActiveSetRanges() {
+		return this.slider_activeSetRange;
 	}
 	
 	public JLabel getValueReselectHysteresis() {
-		return this.value_reselectHysteresis;
+		return this.value_activeSetRange;
 	}
 	
-	public JCheckBox getCheckBoxGSM() {
-		return this.checkbox_GSM;
+	public JCheckBox getCheckBoxUMTS() {
+		return this.checkbox_UMTS;
 	}
 	
 	public JComboBox<ComboOption> getComboFrequency() {
 		return this.combo_frequency;
-	}
-	
-	public JLabel getLabelFrequencyOffset() {
-		return this.label_frequencyOffset;
-	}
-	
-	public JComboBox<ComboOption> getComboFrequencyOffset() {
-		return this.combo_frequencyOffset;
-	}
-	
-	public JComboBox<ComboOption> getComboQSI() {
-		return this.combo_QSI;
-	}
-	
-	public JComboBox<ComboOption> getComboQSC() {
-		return this.combo_QSC;
 	}
 	
 	public JLabel getLabelNeighbors() {
@@ -254,12 +215,12 @@ public class MenuCellGSMView extends JPanel {
 		
 		for(Antenna antenna: listAntenna) {
 			
-			if (antenna.getCellGSM() != null && (activeCell == null || antenna.getCellGSM() !=  activeCell)) {
+			if (antenna.getCellGSM() != null) {
 				ComboOption comboOptionGSM = new ComboOption(antenna.getCellGSM().getId(), "Antenna " + antenna.getId() + " (GSM)");
 				this.getListNeighborsModel().add(this.getListNeighborsModel().getSize(), comboOptionGSM);
 			}
 			
-			if (antenna.getCellUMTS() != null) {
+			if (antenna.getCellUMTS() != null &&  (activeCell == null || antenna.getCellUMTS() !=  activeCell)) {
 				ComboOption comboOptionUMTS = new ComboOption(antenna.getCellUMTS().getId(), "Antenna " + antenna.getId() + " (UMTS)");
 				this.getListNeighborsModel().add(this.getListNeighborsModel().getSize(), comboOptionUMTS);
 				
@@ -276,10 +237,9 @@ public class MenuCellGSMView extends JPanel {
 		else {
 			color = Color.GRAY;
 		}
-		this.setBorder(BorderFactory.createTitledBorder(null, "Cell GSM", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, color));
+		this.setBorder(BorderFactory.createTitledBorder(null, "Cell UMTS", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, color));
 		
-		
-		this.checkbox_GSM.setEnabled(isActivated || isCheckBox);
+		this.checkbox_UMTS.setEnabled(isActivated || isCheckBox);
 		
 		this.label_power.setEnabled(isActivated);
 		this.slider_power.setEnabled(isActivated);
@@ -289,23 +249,15 @@ public class MenuCellGSMView extends JPanel {
 		this.slider_rxAccessMin.setEnabled(isActivated);
 		this.value_rxAccessMin.setEnabled(isActivated);
 		
-		this.label_reselectOffset.setEnabled(isActivated);
-		this.slider_reselectOffset.setEnabled(isActivated);
-		this.value_reselectOffset.setEnabled(isActivated);
+		this.label_qualityMin.setEnabled(isActivated);
+		this.slider_qualityMin.setEnabled(isActivated);
+		this.value_qualityMin.setEnabled(isActivated);
 		
-		this.label_reselectHysteresis.setEnabled(isActivated);
-		this.slider_reselectHysteresis.setEnabled(isActivated);
-		this.value_reselectHysteresis.setEnabled(isActivated);
+		this.label_activeSetRange.setEnabled(isActivated);
+		this.slider_activeSetRange.setEnabled(isActivated);
+		this.value_activeSetRange.setEnabled(isActivated);
 		
 		this.combo_frequency.setEnabled(isActivated);
-		this.label_frequencyOffset.setEnabled(isActivated);
-		this.combo_frequencyOffset.setEnabled(isActivated);
-		
-		this.label_QSI.setEnabled(isActivated);
-		this.combo_QSI.setEnabled(isActivated);
-		
-		this.label_QSC.setEnabled(isActivated);
-		this.combo_QSC.setEnabled(isActivated);
 		
 		this.list_neighbors.setEnabled(isActivated);
 		this.label_neighbors.setEnabled(isActivated);

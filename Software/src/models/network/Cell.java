@@ -21,6 +21,7 @@ public abstract class Cell implements Comparable<Cell> {
 	private int power;		//power in dBm
 	private int frequency;	//frequency in MHz
 	private int type;
+	private boolean isEnabled;
 	private boolean isSelected;
 	private boolean isActive;
 	private Set<Cell> neighbors;
@@ -31,11 +32,10 @@ public abstract class Cell implements Comparable<Cell> {
 	protected EventListenerList listenerList;
 	
 	
-	public Cell(int id, int power, int frequency) {
+	public Cell(int id) {
 		
 		this.setId(id);
-		this.setFrequency(frequency);
-		this.setPower(power);
+		this.setEnabled(true);
 		this.isSelected = false;
 		this.isActive = false;
 		this.neighbors = new HashSet<>();
@@ -120,7 +120,7 @@ public abstract class Cell implements Comparable<Cell> {
 		this.listenerList.add(CellListener.class, cellListener);
 	}
 	
-	public void removeAreaListener(CellListener cellListener) {
+	public void removeCellListener(CellListener cellListener) {
 		this.listenerList.remove(CellListener.class, cellListener);
 	}
 	
@@ -209,5 +209,13 @@ public abstract class Cell implements Comparable<Cell> {
 	public String toString() {
 		
 		return "Cell<" + this.getId() + ">";
+	}
+
+	public boolean isEnabled() {
+		return this.isEnabled;
+	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
 	}
 }

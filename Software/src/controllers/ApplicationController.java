@@ -5,8 +5,11 @@ import java.awt.event.ComponentListener;
 
 import events.CellEvent;
 import events.CellListener;
+import events.MobileEvent;
+import events.MobileListener;
 import views.application.ApplicationView;
 import views.area.AreaView;
+import views.menu.MenuPhoneView;
 import models.application.ApplicationModel;
 import models.mobile.Mobile;
 import models.network.Cell;
@@ -180,6 +183,33 @@ public class ApplicationController  {
 					areaController.getAreaView().updateCell((Cell) e.getSource());	
 					
 					//System.out.println("Removed from Active Set : " + Mobile.Instance().getModuleUMTS().getActiveSet());
+				}
+			});
+			
+			this.mobile.addMobileListener(new MobileListener() {
+				
+				@Override
+				public void dataChanged(MobileEvent e) {
+					if(e.getID() == MobileEvent.MOBILE_DATA_OK) {
+						MenuController.Instance().getMenuView().getMenuPhoneView().setButtonState(MenuController.Instance().getMenuView().getMenuPhoneView().getButtonData(), MenuPhoneView.BUTTON_STATE_ON);
+					}
+					else { //MobileEvent.MOBILE_DATA_NO)
+						MenuController.Instance().getMenuView().getMenuPhoneView().setButtonState(MenuController.Instance().getMenuView().getMenuPhoneView().getButtonData(), MenuPhoneView.BUTTON_STATE_INACTIVE);
+
+					}
+					
+				}
+				
+				@Override
+				public void callChanged(MobileEvent e) {
+					if(e.getID() == MobileEvent.MOBILE_CALL_OK) {
+						MenuController.Instance().getMenuView().getMenuPhoneView().setButtonState(MenuController.Instance().getMenuView().getMenuPhoneView().getButtonCall(), MenuPhoneView.BUTTON_STATE_ON);
+					}
+					else { //MobileEvent.MOBILE_DATA_NO)
+						MenuController.Instance().getMenuView().getMenuPhoneView().setButtonState(MenuController.Instance().getMenuView().getMenuPhoneView().getButtonCall(), MenuPhoneView.BUTTON_STATE_INACTIVE);
+
+					}
+					
 				}
 			});
 		}

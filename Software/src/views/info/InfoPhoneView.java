@@ -12,6 +12,7 @@ import javax.swing.JProgressBar;
 import models.application.ApplicationModel;
 import models.info.InfoModel;
 import models.mobile.Mobile;
+import models.mobile.ModuleGSM;
 import models.network.Cell;
 import models.network.CellGSM;
 import models.network.CellUMTS;
@@ -73,7 +74,7 @@ public class InfoPhoneView extends JPanel implements Runnable {
 		JPanel panelTop4 = new JPanel(new FlowLayout());
 		this.labelRate = new JLabel(" Througput ");
 		this.labelRate.setPreferredSize(new Dimension(80, 20));
-		this.barRate = new JProgressBar(0, 128);
+		this.barRate = new JProgressBar(0, 2000);
 		this.barRate.setPreferredSize(new Dimension(135, 20));
 		this.valueRate = new JLabel(" 0 kb/s");
 		this.valueRate.setPreferredSize(new Dimension(65, 20));
@@ -94,8 +95,24 @@ public class InfoPhoneView extends JPanel implements Runnable {
 	}
 	
 	private void update() {
-
-		if(mobile.getService() != null) {
+		
+		boolean isService = (mobile.getService() != null);
+		//this.labelAntenna.setEnabled(isService);
+		//this.labelCellType.setEnabled(isService);
+		
+		this.labelPower.setEnabled(isService);
+		this.barPower.setEnabled(isService);
+		this.valuePower.setEnabled(isService);
+		
+		this.labelInterference.setEnabled(isService);
+		this.barInterference.setEnabled(isService);
+		this.valueInterference.setEnabled(isService);
+		
+		this.labelRate.setEnabled(isService && this.mobile.isData());
+		this.barRate.setEnabled(isService && this.mobile.isData());
+		this.valueRate.setEnabled(isService && this.mobile.isData());
+		
+		if(isService) {
 			
 			Cell service = this.mobile.getService();
 			
@@ -114,7 +131,7 @@ public class InfoPhoneView extends JPanel implements Runnable {
 			
 			//Top3
 			if (service.getType() == Cell.CELLTYPE_GSM) {
-				this.labelInterference.setText(" SINR ");
+				this.labelInterference.setText(" C/I ");
 				this.valueInterference.setText(" " + this.mobile.getModuleGSM().getSINR((CellGSM)service) + " dB (" + Formulas.noiseToRxQUAL(this.mobile.getModuleGSM().getSINR((CellGSM)service))  + ")");
 				this.barInterference.setValue(this.mobile.getModuleGSM().getSINR((CellGSM)service));
 			}
@@ -127,16 +144,60 @@ public class InfoPhoneView extends JPanel implements Runnable {
 			//Top4
 			if (service.getType() == Cell.CELLTYPE_GSM) {
 				
-				this.labelRate.setEnabled(this.mobile.isData());
-				this.valueRate.setEnabled(this.mobile.isData());
-				this.barRate.setEnabled(this.mobile.isData());
-				
 				if(this.mobile.isData()) {
-					this.valueRate.setText(" " + Math.round(this.mobile.getModuleGSM().getDataThroughput((CellGSM) service)) + " kb/s");
-					this.barRate.setValue((int) Math.round(this.mobile.getModuleGSM().getDataThroughput((CellGSM) service)));
+					
+					int value = 0;
+					if (mobile.isEDGE()) {
+						value = (int) Math.round(this.mobile.getModuleGSM().getDataThroughput((CellGSM) service, ModuleGSM.EDGE));
+					}
+					else if(mobile.isGPRS()) {
+						value = (int) Math.round(this.mobile.getModuleGSM().getDataThroughput((CellGSM) service, ModuleGSM.GPRS));
+					}
+					
+					this.valueRate.setText(" " + value + " Kb/s");
+					this.barRate.setValue(value);
+				}
+			}
+			else {
+				//througput for UMTS
+				if(this.mobile.isData()) {
+					
+					int value = (int) Math.round(this.mobile.getModuleUMTS().getDataThroughput((CellUMTS) service));
+					
+					String valueTxt = value + " Kb/s";
+					if(value >= 1000) {
+						valueTxt = value / 1000 + " Mb/s";
+					}
+							
+					this.valueRate.setText(" " + valueTxt);
+					
+					this.barRate.setValue((int) (Math.round(value)));
 				}
 			}
 		}
+		else {	//No service Cell
+			
+			if(this.mobile.isPower()) {
+				this.labelAntenna.setText(" No Connection ");
+			}
+			else {
+				this.labelAntenna.setText(" Mobile is switched off");
+			}
+				
+			this.labelCellType.setText("");
+			
+			this.barPower.setValue(this.barPower.getMinimum());
+			this.valuePower.setText("");
+			
+			this.barInterference.setValue(this.barInterference.getMinimum());
+			this.valueInterference.setText("");
+		}
+		
+		if(! isService || ! this.mobile.isData()) {
+			this.barRate.setValue(this.barRate.getMinimum());
+			this.valueRate.setText("");
+		}
+		
 	}
 
 	@Override

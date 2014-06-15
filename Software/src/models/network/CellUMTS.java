@@ -22,24 +22,34 @@ public class CellUMTS extends Cell {
 	public static final int MIN_QQUAL_MIN = -112;
 	public static final int MAX_QQUAL_MIN = 0;
 	
+	public static final int DEFAULT_ACTIVESET_RANGE = 3;
+	public static final int MIN_ACTIVESET_RANGE = 0;
+	public static final int MAX_ACTIVESET_RANGE = 10;
+	
 	public static int DEFAULT_FREQUENCY = 2100;		//MHz
 	
-	private int qRxLevMin = 0;		//dBm
-	private int qRxLevOffset = 0;	//dBm (for cell priority)
-	private int qQualMin = 0;		//dB
-	private int qQualOffset = 0;	//dB (for cell priority)
+	private int qRxLevMin;		//dBm
+	private int qRxLevOffset;	//dBm (for cell priority)
+	private int qQualMin;		//dB
+	private int qQualOffset;	//dB (for cell priority)
+	private int activeSetRange ;
 	
 	private boolean inActiveSet;
 	
-	public CellUMTS(int id, int power, int frequency) {
+	public CellUMTS(int id) {
 		
-		super(id, power, frequency);
+		super(id);
 		this.setType(Cell.CELLTYPE_UMTS);
+		this.setPower(CellUMTS.DEFAULT_STRENGTH);
+		this.setFrequency(CellUMTS.DEFAULT_FREQUENCY);
+		this.setQRxLevMin(DEFAULT_QRXLEV_MIN);
+		this.setQQualMin(DEFAULT_QQUAL_MIN);
+		this.setActiveSetRange(DEFAULT_ACTIVESET_RANGE);
 		
-		this.qRxLevMin = DEFAULT_QRXLEV_MIN;
-		this.qQualMin = DEFAULT_QQUAL_MIN;
+		//not used at this time
 		this.qRxLevOffset = 0;
 		this.qQualOffset = 0;
+		
 		this.inActiveSet = false;
 	}
 	
@@ -52,10 +62,33 @@ public class CellUMTS extends Cell {
 		return super.getPower() - 10;
 	}
 	
-	/*@Override
-	public int getStrength(float mobileX, float mobileY) {
-		return (int) Math.round(Formulas.toDB(Formulas.toLinear(super.getStrength(mobileX, mobileY)) * 256));
-	}*/
+	public int getFullPower() {
+		return super.getPower();
+	}
+	
+	public int getQRxLevMin() {
+		return this.qRxLevMin;
+	}
+	
+	public void setQRxLevMin(int qRxLevMin) {
+		this.qRxLevMin = qRxLevMin;
+	}
+	
+	public int getQQualMin() {
+		return this.qQualMin;
+	}
+	
+	public void setQQualMin(int qQualMin) {
+		this.qQualMin = qQualMin;
+	}
+	
+	public int getActiveSetRange() {
+		return this.activeSetRange;
+	}
+
+	public void setActiveSetRange(int activeSetRange) {
+		this.activeSetRange = activeSetRange;
+	}
 	
 	public int getSRxLevCriterion(int strength) {
 		return strength - (this.qRxLevMin + this.qRxLevOffset);
@@ -108,8 +141,5 @@ public class CellUMTS extends Cell {
 	          }            
 	     }
 	}
-
-
-	
 	
 }

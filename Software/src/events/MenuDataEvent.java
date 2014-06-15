@@ -14,9 +14,19 @@ public class MenuDataEvent extends AWTEvent {
 	public static final int TYPE_SLIDER_GSM_RESELECT_OFFSET = 3 ;
 	public static final int TYPE_SLIDER_GSM_RESELECT_HYSTERESIS = 4 ;
 	
-	public static final int TYPE_COMBO_AREA = 5 ;
-	public static final int TYPE_COMBO_GSM_QSI = 6 ;
-	public static final int TYPE_COMBO_GSM_QSC = 7 ;
+	public static final int TYPE_SLIDER_UMTS_POWER = 5 ;
+	public static final int TYPE_SLIDER_UMTS_ACCESS_MIN = 6 ;
+	public static final int TYPE_SLIDER_UMTS_QUALITY_MIN = 7;
+	public static final int TYPE_SLIDER_UMTS_ACTIVESET_RANGE = 8;
+	
+	public static final int TYPE_COMBO_AREA = 9;
+	public static final int TYPE_COMBO_GSM_QSI = 10;
+	public static final int TYPE_COMBO_GSM_QSC = 11;
+	
+	public static final int TYPE_COMBO_GSM_FREQUENCY = 12;
+	public static final int TYPE_COMBO_UMTS_FREQUENCY = 13;
+	
+	public static final int TYPE_COMBO_GSM_FREQUENCY_OFFSET = 14;
 		
 	public MenuDataEvent(MenuView menuView, int type, int value) {
 		super(menuView, type);

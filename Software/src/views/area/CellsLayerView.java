@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import config.MainConfig;
 import models.application.ApplicationModel;
 import models.area.AreaModel;
+import models.mobile.Mobile;
 import models.network.Antenna;
 import models.network.AntennaManager;
 import models.network.Cell;
@@ -73,13 +74,13 @@ public class CellsLayerView extends JPanel {
 	}
 	
 	public void updateCellsVisible() {
-		Network network = Network.Instance();
+		Mobile mobile = Mobile.Instance();
 		for (CellView cellView: this.cells) {
 			if(cellView.getCellModel().getType() == Cell.CELLTYPE_GSM) {
-				cellView.setVisible(network.isGSM());
+				cellView.setVisible(mobile.isGSM());
 			}
 			else {
-				cellView.setVisible(network.isUMTS());
+				cellView.setVisible(mobile.isUMTS());
 			}
 		}
 	}

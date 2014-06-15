@@ -73,12 +73,66 @@ public class ParseXMLFile {
 						Element cellNode = (Element) cellList.item(k);
 						
 						if (cellNode.getAttribute("type").contains("GSM")) {
-							CellGSM cellGSM = new CellGSM(Integer.parseInt(cellNode.getAttribute("id")), Integer.parseInt(cellNode.getAttribute("power")), Integer.parseInt(cellNode.getAttribute("frequency")), Integer.parseInt(cellNode.getAttribute("offset")));
+							CellGSM cellGSM = new CellGSM(Integer.parseInt(cellNode.getAttribute("id")));
+							
+							if(cellNode.hasAttribute("power")) {
+								cellGSM.setPower(Integer.parseInt(cellNode.getAttribute("power")));
+							}
+							
+							if(cellNode.hasAttribute("frequency")) {
+								cellGSM.setFrequency(Integer.parseInt(cellNode.getAttribute("frequency")));
+							}
+							
+							if(cellNode.hasAttribute("offset")) {
+								cellGSM.setFrequencyOffset(Integer.parseInt(cellNode.getAttribute("offset")));
+							}
+							
+							if(cellNode.hasAttribute("access_min")) {
+								cellGSM.setRxAccessMin(Integer.parseInt(cellNode.getAttribute("access_min")));
+							}
+							
+							if(cellNode.hasAttribute("reselect_offset")) {
+								cellGSM.setReselectOffset(Integer.parseInt(cellNode.getAttribute("reselect_offset")));
+							}
+							
+							if(cellNode.hasAttribute("reselect_hysteresis")) {
+								cellGSM.setReselectHysteresis(Integer.parseInt(cellNode.getAttribute("reselect_hysteresis")));
+							}
+							
+							if(cellNode.hasAttribute("qsc")) {
+								cellGSM.setQSC(Integer.parseInt(cellNode.getAttribute("qsc")));
+							}
+							
+							if(cellNode.hasAttribute("qsi")) {
+								cellGSM.setQSI(Integer.parseInt(cellNode.getAttribute("qsi")));
+							}
+							
 							cellManager.addCellGSM(cellGSM);
 							antenna.setCellGSM(cellGSM);
 						}
 						else if(cellNode.getAttribute("type").contains("UMTS")) {
-							CellUMTS cellUMTS = new CellUMTS(Integer.parseInt(cellNode.getAttribute("id")), Integer.parseInt(cellNode.getAttribute("power")), Integer.parseInt(cellNode.getAttribute("frequency")));
+							CellUMTS cellUMTS = new CellUMTS(Integer.parseInt(cellNode.getAttribute("id")));
+							
+							if(cellNode.hasAttribute("power")) {
+								cellUMTS.setPower(Integer.parseInt(cellNode.getAttribute("power")));
+							}
+							
+							if(cellNode.hasAttribute("frequency")) {
+								cellUMTS.setFrequency(Integer.parseInt(cellNode.getAttribute("frequency")));
+							}
+							
+							if(cellNode.hasAttribute("access_min")) {
+								cellUMTS.setQRxLevMin(Integer.parseInt(cellNode.getAttribute("access_min")));
+							}
+							
+							if(cellNode.hasAttribute("quality_min")) {
+								cellUMTS.setQQualMin(Integer.parseInt(cellNode.getAttribute("quality_min")));
+							}
+							
+							if(cellNode.hasAttribute("active_range")) {
+								cellUMTS.setActiveSetRange(Integer.parseInt(cellNode.getAttribute("active_range")));
+							}
+									
 							cellManager.addCellUMTS(cellUMTS);
 							antenna.setCellUMTS(cellUMTS);
 						}

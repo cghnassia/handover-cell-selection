@@ -56,8 +56,12 @@ public class CellView extends JLabel {
 	protected void paintComponent(Graphics g) {
 		// TODO Auto-generated method stub
 		super.paintComponents(g);
+
+		if(! this.getCellModel().isEnabled()) {
+			return;
+		}
+		
 		int size = (int) this.getBounds().getWidth();
-		Network network = Network.Instance();
 		Graphics2D g2d = (Graphics2D) g;
 		
 		int coordX = (int) (size - size * Math.cos(Math.PI / 6));
@@ -74,7 +78,7 @@ public class CellView extends JLabel {
 		
 		if(this.isNeighborActive) {
 			//System.out.println("active : " + this.getCellModel().getId());
-			g2d.setColor(new Color(125, 125, 125, 155));
+			g2d.setColor(new Color(125, 125, 125, 64));
 			g2d.fillPolygon(coordsx, coordsy, 6);
 		}
 		else if(this.getCellModel().getType() == Cell.CELLTYPE_GSM) {

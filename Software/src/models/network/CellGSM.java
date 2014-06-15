@@ -11,7 +11,7 @@ public class CellGSM extends Cell {
 
 	public static final int COVERAGE_STRENGTH = -94;	//dBm
 	
-	public static final int DEFAULT_STRENGTH = 35;
+	public static final int DEFAULT_STRENGTH = 38;
 	public static final int MIN_STRENGTH = 0;
 	public static final int MAX_STRENGTH = 50;
 	
@@ -32,23 +32,34 @@ public class CellGSM extends Cell {
 	public static final int MAX_RESELECT_HYSTERESIS = 20;
 	
 	public static int DEFAULT_FREQUENCY = 900;		//MHz
+	public static int DEFAULT_FREQUENCY_OFFSET = 0;
 	
-	private int offset;							//offset of the channel frequency
+	public static int DEFAULT_QSC = 7;
+	public static int DEFAULT_QSI = 7;
+
+	
+	private int frequencyOffset;							//offset of the channel frequency
 	private int rxAccessMin;					//minimum
 	private int rxAccessGPRSMin;
 	private int reselectOffset;					//used to prioritize the cell
 	private int reselectHysteresis; 			//usually used only if not same Location Area (LA)
+	private int qsi;
+	private int qsc;
 
 	
-	public CellGSM(int id, int power, int frequency, int offset) {
+	public CellGSM(int id) {
 		
-		super(id, power, frequency);
+		super(id);
 		this.setType(Cell.CELLTYPE_GSM);
-		this.offset = offset;
-		this.rxAccessMin = CellGSM.DEFAULT_RX_ACCESS_MIN;
-		this.reselectHysteresis = CellGSM.DEFAULT_RESELECT_HYSTERESIS;
-		this.reselectOffset = CellGSM.DEFAULT_RESELECT_OFFSET;
-		this.rxAccessGPRSMin = CellGSM.DEFAULT_RX_ACCESS_GRPS_MIN;
+		this.setPower(CellGSM.DEFAULT_STRENGTH);
+		this.setFrequency(CellGSM.DEFAULT_FREQUENCY);
+		this.setFrequencyOffset(CellGSM.DEFAULT_FREQUENCY_OFFSET);
+		this.setRxAccessMin(CellGSM.DEFAULT_RX_ACCESS_MIN);
+		this.setReselectHysteresis(CellGSM.DEFAULT_RESELECT_HYSTERESIS);
+		this.setReselectOffset(CellGSM.DEFAULT_RESELECT_OFFSET);;
+		this.setRxAccessGPRSMin(CellGSM.DEFAULT_RX_ACCESS_GRPS_MIN);
+		this.setQSC(CellGSM.DEFAULT_QSC);
+		this.setQSI(CellGSM.DEFAULT_QSI);
 	}
 	
 	public int getRadius() {
@@ -83,12 +94,12 @@ public class CellGSM extends Cell {
 		return this.getC2Criterion(mobileStrength, isSameLocationArea);
 	}
 
-	public int getOffset() {
-		return this.offset;
+	public int getFrequencyOffset() {
+		return this.frequencyOffset;
 	}
 
-	public void setOffset(int offset) {
-		this.offset = offset;
+	public void setFrequencyOffset(int frequencyOffset) {
+		this.frequencyOffset = frequencyOffset;
 	}
 	
 	public int getRxAccessMin() {
@@ -113,6 +124,30 @@ public class CellGSM extends Cell {
 	
 	public void setReselectHysteresis(int reselectHysteresis) {
 		this.reselectHysteresis = reselectHysteresis;
+	}
+	
+	public int getRxAccessGPRSMin() {
+		return this.rxAccessGPRSMin;
+	}
+	
+	public void setRxAccessGPRSMin(int rxAccessGPRSMin) {
+		this.rxAccessGPRSMin = rxAccessGPRSMin;
+	}
+	
+	public int getQSC() {
+		return this.qsc;
+	}
+
+	public void setQSC(int qsc) {
+		this.qsc = qsc;
+	}
+
+	public int getQSI() {
+		return this.qsi;
+	}
+
+	public void setQSI(int qsi) {
+		this.qsi = qsi;
 	}
 
 }

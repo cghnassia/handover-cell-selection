@@ -8,6 +8,7 @@ import javax.swing.JTextArea;
 
 public class InfoConsoleView extends JPanel {
 
+	private JScrollPane scrollPane;
 	private JTextArea textArea;
 	
 	public InfoConsoleView() {
@@ -16,21 +17,25 @@ public class InfoConsoleView extends JPanel {
 		
 		this.setLayout(new BorderLayout());
 		
-		JScrollPane scrollPane = new JScrollPane(this.textArea);
+		this.scrollPane = new JScrollPane(this.textArea);
 		this.add(scrollPane, BorderLayout.CENTER);
 		
 		this.setOpaque(false);
 		
 		//Exemple
+		/*this.getTextArea().setText(this.getTextArea().getText() + "eazeaezaeazeazeazeaz\n dazdadzadzadazdazd\n allo allo allo\n dazadazdazdazda");
 		this.getTextArea().setText(this.getTextArea().getText() + "eazeaezaeazeazeazeaz\n dazdadzadzadazdazd\n allo allo allo\n dazadazdazdazda");
 		this.getTextArea().setText(this.getTextArea().getText() + "eazeaezaeazeazeazeaz\n dazdadzadzadazdazd\n allo allo allo\n dazadazdazdazda");
 		this.getTextArea().setText(this.getTextArea().getText() + "eazeaezaeazeazeazeaz\n dazdadzadzadazdazd\n allo allo allo\n dazadazdazdazda");
-		this.getTextArea().setText(this.getTextArea().getText() + "eazeaezaeazeazeazeaz\n dazdadzadzadazdazd\n allo allo allo\n dazadazdazdazda");
-		this.getTextArea().setText(this.getTextArea().getText() + "eazeaezaeazeazeazeaz\n dazdadzadzadazdazd\n allo allo allo\n dazadazdazdazda");
+		this.getTextArea().setText(this.getTextArea().getText() + "eazeaezaeazeazeazeaz\n dazdadzadzadazdazd\n allo allo allo\n dazadazdazdazda");*/
 
 	}
 	
 	public JTextArea getTextArea() {
 		return this.textArea;
+	}
+	
+	public JScrollPane getScrollPane() {
+		return this.scrollPane;
 	}
 }

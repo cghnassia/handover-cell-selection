@@ -187,38 +187,48 @@ public class AreaView extends JLayeredPane {
 		
 		for (AntennaView antennaView: this.getCellsLayerView().getAntennas()) {
 			
-			if(this.activeAntenna != null && antennaView.getAntennaModel() == this.activeAntenna) {
-					antennaView.setActive(false);
-			}
-			
 			if(activeAntenna != null) {
+				
+				
+				if (antennaView.getAntennaModel().getCellGSM() != null) {
+					this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), false);
+				}
+				
+				if (antennaView.getAntennaModel().getCellUMTS() != null) {
+					this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), false);
+				}
+				
 				if (antennaView.getAntennaModel() == activeAntenna) {
 					antennaView.setActive(true);
 				}
-				else { // Manque GSM avec UMTS neighbors et inversement
-					if (activeAntenna.getCellGSM() == null || antennaView.getAntennaModel().getCellGSM() == null) {
-						//pass
-					}
-					else if (activeAntenna.getCellGSM().getNeighbors().contains(antennaView.getAntennaModel().getCellGSM())) {
-						this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), true);
-					}
-					else {
-						this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), false);
-					}
-					
-					if (activeAntenna.getCellUMTS() == null || antennaView.getAntennaModel().getCellUMTS() == null) {
-						//pass
-					}
-					else if (activeAntenna.getCellUMTS().getNeighbors().contains(antennaView.getAntennaModel().getCellUMTS())) {
-						this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), true);
-					}
-					else {
-						this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), false);
+				else {
+					antennaView.setActive(false);
+				
+					if (activeAntenna.getCellGSM() != null) { 
+						
+						if (antennaView.getAntennaModel().getCellGSM() != null && activeAntenna.getCellGSM().getNeighbors().contains(antennaView.getAntennaModel().getCellGSM())) {
+							this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), true);
+						}
+		
+						if (antennaView.getAntennaModel().getCellUMTS() != null && activeAntenna.getCellGSM().getNeighbors().contains(antennaView.getAntennaModel().getCellUMTS())) {
+							this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), true);
+						}
 					}
 					
+					if (activeAntenna.getCellUMTS() != null) {
+	
+						if (antennaView.getAntennaModel().getCellUMTS() != null && activeAntenna.getCellUMTS().getNeighbors().contains(antennaView.getAntennaModel().getCellUMTS())) {
+							this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), true);
+						}
+						
+						if (antennaView.getAntennaModel().getCellGSM() != null && activeAntenna.getCellUMTS().getNeighbors().contains(antennaView.getAntennaModel().getCellGSM())) {
+							this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), true);
+						}
+					}
 				}
 			}
 			else {
+				antennaView.setActive(false);
 				this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), false);
 				this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), false);
 			}

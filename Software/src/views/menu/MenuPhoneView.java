@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -13,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
+import models.mobile.Mobile;
 import models.utilities.LoadImage;
 import config.MainConfig;
 
@@ -20,6 +22,7 @@ public class MenuPhoneView extends JPanel {
 	
 	private JButton button_call;
 	private JButton button_data;
+	private JButton button_power;
 	
 	private JSlider slider_speed;
 	private JLabel label_speed;
@@ -28,13 +31,40 @@ public class MenuPhoneView extends JPanel {
 	private JCheckBox checkbox_GPRS;
 	private JCheckBox checkbox_EDGE;
 	private JCheckBox checkbox_UMTS;
+
+	private ImageIcon imagePowerOn;
+	private ImageIcon imagePowerOff;
+	
+	private ImageIcon imageCallOn;
+	private ImageIcon imageCallOff;
+	
+	private ImageIcon imageDataOn;
+	private ImageIcon imageDataOff;
+	
+	
+	public static int BUTTON_STATE_INACTIVE = 0;
+	public static int BUTTON_STATE_ON = 1;
+	public static int BUTTON_STATE_OFF = 2;
+	
 	
 	public MenuPhoneView() {
 		super(new BorderLayout(20, 10));
 		this.setBorder(BorderFactory.createTitledBorder("Phone controls"));
 		
-		this. button_call = new JButton(LoadImage.load(LoadImage.BUTTON_CALL_ON));
-		this. button_data = new JButton(LoadImage.load(LoadImage.BUTTON_DATA_ON));
+		this.imagePowerOn = LoadImage.load(LoadImage.BUTTON_POWER_ON);
+		this.imagePowerOff = LoadImage.load(LoadImage.BUTTON_POWER_OFF);
+		
+		this.imageCallOn = LoadImage.load(LoadImage.BUTTON_CALL_ON);
+		this.imageCallOff = LoadImage.load(LoadImage.BUTTON_CALL_OFF);
+		
+		this.imageDataOn = LoadImage.load(LoadImage.BUTTON_DATA_ON);
+		this.imageDataOff = LoadImage.load(LoadImage.BUTTON_DATA_OFF);
+		
+		this.button_power = new JButton(this.imagePowerOn);
+		this.button_call = new JButton(this.imageCallOn);
+		this.button_call.setEnabled(false);
+		this.button_data = new JButton(this.imageDataOn);
+		this.button_data.setEnabled(false);
 		
 		this.slider_speed = new JSlider(MainConfig.SPEED_MIN, MainConfig.SPEED_MAX, MainConfig.SPEED_MIN);
 		this.label_speed = new JLabel(MainConfig.SPEED_MIN + " m/s");
@@ -48,6 +78,7 @@ public class MenuPhoneView extends JPanel {
 		
 		JPanel topPanel = new JPanel(new BorderLayout());
 		JPanel buttonsContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+		buttonsContainer.add(this.button_power);
 		buttonsContainer.add(this.button_call);
 		buttonsContainer.add(this.button_data);
 		topPanel.add(new JLabel("Phone functionnalities: ", SwingConstants.CENTER), BorderLayout.NORTH);
@@ -72,6 +103,45 @@ public class MenuPhoneView extends JPanel {
 		this.add(topPanel, BorderLayout.NORTH);
 		this.add(middlePanel, BorderLayout.CENTER);
 		this.add(bottomPanel, BorderLayout.SOUTH);
+	}
+	
+	public void setButtonState(JButton button, int state) {
+		
+		if(state == MenuPhoneView.BUTTON_STATE_INACTIVE) {
+			button.setEnabled(false);
+		}
+		else {
+			button.setEnabled(true);
+		}
+		
+		if(button == this.button_power) {
+			if(state == BUTTON_STATE_ON || state == BUTTON_STATE_INACTIVE) {
+				button.setIcon(this.imagePowerOn);
+			}
+			else {
+				button.setIcon(this.imagePowerOff);
+			}
+		}
+		else if(button == this.button_call) {
+			if(state == BUTTON_STATE_ON || state == BUTTON_STATE_INACTIVE) {
+				button.setIcon(this.imageCallOn);
+			}
+			else {
+				button.setIcon(this.imageCallOff);
+			}
+		}
+		else {
+			if(state == BUTTON_STATE_ON || state == BUTTON_STATE_INACTIVE) {
+				button.setIcon(this.imageDataOn);
+			}
+			else {
+				button.setIcon(this.imageDataOff);
+			}
+		}
+	}
+	
+	public JButton getButtonPower() {
+		return this.button_power;
 	}
 	
 	public JButton getButtonCall() {

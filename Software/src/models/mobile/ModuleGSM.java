@@ -7,6 +7,7 @@ import java.util.Timer;
 import com.sun.org.apache.bcel.internal.classfile.PMGClass;
 
 import controllers.AreaController;
+import controllers.InfoController;
 import models.application.ApplicationModel;
 import models.network.Cell;
 import models.network.CellGSM;
@@ -15,9 +16,11 @@ import models.utilities.Formulas;
 
 public class ModuleGSM extends Module {
 	
-	protected Mobile mobile;
 	protected MeasurementSet measurements;
 	protected Set<CellGSM> neighbors;
+	
+	public static int GPRS = 0;
+	public static int EDGE = 1;
 		
 	public ModuleGSM(Mobile mobile) {
 		super(mobile);
@@ -45,6 +48,10 @@ public class ModuleGSM extends Module {
 		}
 		
 		for (CellGSM cellGSM: targets) {
+			
+			if(! cellGSM.isEnabled()) {
+				this.measurements.removeCellMeasurement(cellGSM);
+			}
 			
 			int strength = cellGSM.getStrength(this.getMobile().getX(), this.getMobile().getY());
 			
@@ -123,6 +130,18 @@ public class ModuleGSM extends Module {
 			}
 		}
 		
+		if (cCell != null) {
+			if(this.getMobile().getService() == null) {  
+				InfoController.Instance().publishConsole("Selection", "GSM Cell at Antenna " + cCell.getAntenna().getId() + " has been selected (strength average is " + cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount())  + " dBm)");
+			}
+			else {
+				String message = "Moved from";
+				message += " UMTS Cell at Antenna " + this.getMobile().getService().getAntenna().getId();
+				message += " to GSM Cell at Antenna " + cCell.getAntenna().getId() + " (strength average is " + cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()) + " dBm)";
+				InfoController.Instance().publishConsole("Idle reselection (inter-system)", message);
+			}
+		}
+		
 		return cCell;
 	}
 	
@@ -167,6 +186,13 @@ public class ModuleGSM extends Module {
 		else {
 			cCell = null;
 			cMeasurement = null;
+		}
+		
+		if(cCell != null && cCell != this.getMobile().getService()) {
+			String message = "Moved from";
+			message += " GSM Cell at Antenna " + this.getMobile().getService().getAntenna().getId();
+			message += " to GSM Cell at Antenna " + cCell.getAntenna().getId() + " (strength average is " + cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()) + " dBm)";
+			InfoController.Instance().publishConsole("Idle reselection (intra-system)", message);
 		}
 		
 		return cCell;
@@ -242,6 +268,23 @@ public class ModuleGSM extends Module {
 			}
 		}
 		
+		if(cCell != null && cCell != this.getMobile().getService()) {
+			String message = "Moved from";
+			String title = "Handover";
+			if (this.getMobile().getService().getType() == Cell.CELLTYPE_GSM) {
+				message += " GSM Cell";
+				title += " (intra-system)";
+			}
+			else {
+				message += " UMTS Cell";
+				title += " (inter-system)";
+			}
+			
+			message += " at Antenna " + this.getMobile().getService().getAntenna().getId();
+			message += " to GSM Cell at Antenna " + cCell.getAntenna().getId() + " (strength average is " + cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()) + " dBm, quality is " + cRxQual + ")";
+			InfoController.Instance().publishConsole(title, message);
+		}
+		
 		return cCell;
 	}
 	
@@ -315,6 +358,23 @@ public class ModuleGSM extends Module {
 			}
 		}
 		
+		if(cCell != null && cCell != this.getMobile().getService()) {
+			String message = "Moved from";
+			String title = "Data reselection";
+			if (this.getMobile().getService().getType() == Cell.CELLTYPE_GSM) {
+				message += " GSM Cell";
+				title += " (intra-system)";
+			}
+			else {
+				message += " UMTS Cell";
+				title += " (inter-system)";
+			}
+			
+			message += " at Antenna " + this.getMobile().getService().getAntenna().getId();
+			message += " to GSM Cell at Antenna " + cCell.getAntenna().getId() + " (strength average is " + cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()) + " dBm, quality is " + cRxQual + ")";
+			InfoController.Instance().publishConsole(title, message);
+		}
+		
 		return cCell;
 	}
 	
@@ -325,12 +385,20 @@ public class ModuleGSM extends Module {
 		
 		for(CellGSM cellGSM: CellManager.Instance().getCellsGSM()) {
 			
-			if(measuredCell == cellGSM) {
+			if(! cellGSM.isEnabled()) {
+				continue;
+			}
+			
+			if(cellGSM == measuredCell) {
+				continue;
+			}
+			
+			if(cellGSM.getFrequency() != measuredCell.getFrequency()) {
 				continue;
 			}
 			
 			int strength = cellGSM.getStrength(this.getMobile().getX(), this.getMobile().getY());
-			int delta = Math.abs(measuredCell.getOffset() - cellGSM.getOffset());
+			int delta = Math.abs(measuredCell.getFrequencyOffset() - cellGSM.getFrequencyOffset());
 			switch(delta) {
 				case 0:
 					denominator += Formulas.toLinear(strength);
@@ -352,10 +420,16 @@ public class ModuleGSM extends Module {
 		return (int) Math.round(Formulas.toDB(numerator / denominator));
 	}
 	
-	public double getDataThroughput(CellGSM measuredCell) {
+	public double getDataThroughput(CellGSM measuredCell, int type) {
 		
 		int sinr = getSINR(measuredCell);
-		return Formulas.noiseToDataThrougput(sinr, 6);
+		
+		if(type == ModuleGSM.GPRS) {
+			return Formulas.noiseToGPRSDataThroughput(sinr, 6);
+		}
+		//else if (type == ModuleGSM.EDGE) {
+			return Formulas.noiseToEdgeDataThroughput(sinr, 6);
+		//}
 	}
 
 }

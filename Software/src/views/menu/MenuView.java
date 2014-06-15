@@ -36,6 +36,7 @@ import javax.swing.event.ListSelectionListener;
 
 import sun.security.krb5.Config;
 import models.menu.MenuModel;
+import models.mobile.Mobile;
 import models.network.Network;
 import models.utilities.LoadImage;
 import config.MainConfig;
@@ -49,7 +50,7 @@ public class MenuView extends JPanel {
 	private MenuModel menuModel;
 	private MenuPhoneView menuPhoneView;
 	private MenuAntennaView menuAntennaView;
-	
+
 	public MenuView(MenuModel menuModel) {
 		
 		super(new BorderLayout());
@@ -74,6 +75,7 @@ public class MenuView extends JPanel {
 	
 	private void setListeners() {
 		
+		this.getMenuPhoneView().getButtonPower().addActionListener(new ButtonPhoneListener());
 		this.getMenuPhoneView().getButtonCall().addActionListener(new ButtonPhoneListener());
 		this.getMenuPhoneView().getButtonData().addActionListener(new ButtonPhoneListener());
 		this.getMenuPhoneView().getSliderSpeed().addChangeListener(new SliderListener());
@@ -81,16 +83,26 @@ public class MenuView extends JPanel {
 		this.getMenuPhoneView().getCheckBoxGPRS().addItemListener(new CheckBoxListener());
 		this.getMenuPhoneView().getCheckBoxEDGE().addItemListener(new CheckBoxListener());
 		this.getMenuPhoneView().getCheckBoxUMTS().addItemListener(new CheckBoxListener());
-		
 		this.getMenuAntennaView().getComboArea().addItemListener(new ComboIntegerListener());
+		
 		this.getMenuAntennaView().getMenuCellGSMView().getCheckBoxGSM().addItemListener(new CheckBoxListener());
 		this.getMenuAntennaView().getMenuCellGSMView().getSliderPower().addChangeListener(new SliderListener());
 		this.getMenuAntennaView().getMenuCellGSMView().getSliderRxAccessMin().addChangeListener(new SliderListener());
 		this.getMenuAntennaView().getMenuCellGSMView().getSliderReselectOffset().addChangeListener(new SliderListener());
 		this.getMenuAntennaView().getMenuCellGSMView().getSliderReselectHysteresis().addChangeListener(new SliderListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getComboFrequency().addItemListener(new ComboIntegerListener());
+		this.getMenuAntennaView().getMenuCellGSMView().getComboFrequencyOffset().addItemListener(new ComboIntegerListener());
 		this.getMenuAntennaView().getMenuCellGSMView().getComboQSI().addItemListener(new ComboIntegerListener());
 		this.getMenuAntennaView().getMenuCellGSMView().getComboQSC().addItemListener(new ComboIntegerListener());
 		this.getMenuAntennaView().getMenuCellGSMView().getListNeighbors().addListSelectionListener(new ListListener());
+		
+		this.getMenuAntennaView().getMenuCellUMTSView().getCheckBoxUMTS().addItemListener(new CheckBoxListener());
+		this.getMenuAntennaView().getMenuCellUMTSView().getSliderPower().addChangeListener(new SliderListener());
+		this.getMenuAntennaView().getMenuCellUMTSView().getSliderRxAccessMin().addChangeListener(new SliderListener());
+		this.getMenuAntennaView().getMenuCellUMTSView().getSliderQualityMin().addChangeListener(new SliderListener());
+		this.getMenuAntennaView().getMenuCellUMTSView().getSliderActiveSetRanges().addChangeListener(new SliderListener());
+		this.getMenuAntennaView().getMenuCellUMTSView().getComboFrequency().addItemListener(new ComboIntegerListener());
+		this.getMenuAntennaView().getMenuCellUMTSView().getListNeighbors().addListSelectionListener(new ListListener());
 	}
 	
 	public void updateSpeed(int value) {
@@ -99,15 +111,15 @@ public class MenuView extends JPanel {
 	}
 	
 	public void updateCheckBoxes() {
-		Network network = Network.Instance();
+		Mobile mobile = Mobile.Instance();
 		
-		this.getMenuPhoneView().getCheckBoxGPRS().setEnabled(network.isGSM());
-		this.getMenuPhoneView().getCheckBoxEDGE().setEnabled(network.isGSM());
+		this.getMenuPhoneView().getCheckBoxGPRS().setEnabled(mobile.isGSM());
+		this.getMenuPhoneView().getCheckBoxEDGE().setEnabled(mobile.isGSM());
 		
-		this.getMenuPhoneView().getCheckBoxGSM().setSelected(network.isGSM());
-		this.getMenuPhoneView().getCheckBoxGPRS().setSelected(network.isGPRS());
-		this.getMenuPhoneView().getCheckBoxEDGE().setSelected(network.isEDGE());
-		this.getMenuPhoneView().getCheckBoxUMTS().setSelected(network.isUMTS());
+		/*this.getMenuPhoneView().getCheckBoxGSM().setSelected(mobile.isGSM());
+		this.getMenuPhoneView().getCheckBoxGPRS().setSelected(mobile.isGPRS());
+		this.getMenuPhoneView().getCheckBoxEDGE().setSelected(mobile.isEDGE());
+		this.getMenuPhoneView().getCheckBoxUMTS().setSelected(mobile.isUMTS());*/
 	}
 	
 	protected void fireControlCheckBoxEvent(MenuControlEvent controlEvent) {
@@ -204,7 +216,10 @@ public class MenuView extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			
 			int type;
-			if (e.getSource() == MenuView.this.getMenuPhoneView().getButtonCall()) {
+			if (e.getSource() == MenuView.this.getMenuPhoneView().getButtonPower()) {
+				type = MenuControlEvent.TYPE_BUTTON_POWER;
+			}
+			else if (e.getSource() == MenuView.this.getMenuPhoneView().getButtonCall()) {
 				type = MenuControlEvent.TYPE_BUTTON_CALL;
 			}
 			else { // (e.getSource() == MenuView.this.getMenuPhoneView().getButtonData()) {
@@ -245,6 +260,22 @@ public class MenuView extends JPanel {
 				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_GSM_RESELECT_HYSTERESIS, value);
 				MenuView.this.fireDataSliderEvent(dataEvent);
 			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellUMTSView().getSliderPower()) {
+				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_UMTS_POWER, value);
+				MenuView.this.fireDataSliderEvent(dataEvent);
+			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellUMTSView().getSliderRxAccessMin()) {
+				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_UMTS_ACCESS_MIN, value);
+				MenuView.this.fireDataSliderEvent(dataEvent);
+			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellUMTSView().getSliderQualityMin()) {
+				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_UMTS_QUALITY_MIN, value);
+				MenuView.this.fireDataSliderEvent(dataEvent);
+			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellUMTSView().getSliderActiveSetRanges()) {
+				MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, MenuDataEvent.TYPE_SLIDER_UMTS_ACTIVESET_RANGE, value);
+				MenuView.this.fireDataSliderEvent(dataEvent);
+			}
 		}
 	}
 	
@@ -268,8 +299,11 @@ public class MenuView extends JPanel {
 			else if (source == MenuView.this.menuPhoneView.getCheckBoxUMTS()) {
 				type = MenuControlEvent.TYPE_CHECKBOX_UMTS;
 			}
-			else { //MenuView.this.menuAntennaView.getMenuCellGSMView().getCheckboxGSM()
+			else if (source == MenuView.this.menuAntennaView.getMenuCellGSMView().getCheckBoxGSM()) {
 				type = MenuControlEvent.TYPE_CHECKBOX_CELL_GSM;
+			}
+			else { //(source == MenuView.this.menuAntennaView.getMenuCellUMTSView().getCheckBoxUMTS()) {
+				type = MenuControlEvent.TYPE_CHECKBOX_CELL_UMTS;
 			}
 			
 			MenuControlEvent controlEvent = new MenuControlEvent(MenuView.this, type);
@@ -299,6 +333,11 @@ public class MenuView extends JPanel {
 
 		@Override
 		public void itemStateChanged(ItemEvent e) {
+			
+			if(e.getStateChange() != ItemEvent.SELECTED) {
+				return;
+			}
+			
 			// TODO Auto-generated method stub
 			JComboBox<ComboOption> source = (JComboBox<ComboOption>) e.getSource();
 			int value = ((ComboOption) e.getItem()).getId();
@@ -310,8 +349,17 @@ public class MenuView extends JPanel {
 			else if(source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getComboQSC()) {
 				type = MenuDataEvent.TYPE_COMBO_GSM_QSC;
 			}
-			else { //if (source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getComboQSI()) {
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getComboQSI()) {
 				type = MenuDataEvent.TYPE_COMBO_GSM_QSI;
+			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getComboFrequency()) {
+				type = MenuDataEvent.TYPE_COMBO_GSM_FREQUENCY;
+			}
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getComboFrequencyOffset()){
+				type = MenuDataEvent.TYPE_COMBO_GSM_FREQUENCY_OFFSET;
+			}
+			else {//(source == MenuView.this.getMenuAntennaView().getMenuCellUMTSView().getComboFrequency()) {
+				type = MenuDataEvent.TYPE_COMBO_UMTS_FREQUENCY;
 			}
 			
 			MenuDataEvent dataEvent = new MenuDataEvent(MenuView.this, type, value);
@@ -329,6 +377,10 @@ public class MenuView extends JPanel {
 			//int[] values = source.getSelectedIndices();*/
 			if(source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getListNeighbors()) {
 				MenuControlEvent controlEvent = new MenuControlEvent(MenuView.this, MenuControlEvent.TYPE_GSM_NEIGHBORS);
+				MenuView.this.fireControlListEvent(controlEvent);
+			}
+			else { //source == MenuView.this.getMenuAntennaView().getMenuCellUMTSView().getListNeighbors() 
+				MenuControlEvent controlEvent = new MenuControlEvent(MenuView.this, MenuControlEvent.TYPE_UMTS_NEIGHBORS);
 				MenuView.this.fireControlListEvent(controlEvent);
 			}
 			

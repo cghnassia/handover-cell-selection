@@ -42,19 +42,8 @@ public class InfoController {
 		this.infoView = infoView;
 	}
 	
-	public void Selection(Cell cell) {
-	
-	}
-
-	public void idleReselection (Cell cellBefore, Cell cellAfter) {
-		
-	}
-	
-	public void handover(Cell cellBefore, Cell cellAfter) {
-		
-	}
-	
-	public void dataReslection(Cell cellBefore, Cell cellAfter) {
-		
+	public void publishConsole(String title, String message) {
+		this.getInfoView().getInfoConsoleView().getTextArea().append(title + " : " + message + "\n");
+		this.getInfoView().getInfoConsoleView().getTextArea().setCaretPosition(this.getInfoView().getInfoConsoleView().getTextArea().getDocument().getLength());
 	}
 }
