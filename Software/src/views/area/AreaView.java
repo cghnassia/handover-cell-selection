@@ -204,7 +204,7 @@ public class AreaView extends JLayeredPane {
 				else {
 					antennaView.setActive(false);
 				
-					if (activeAntenna.getCellGSM() != null) { 
+					if (activeAntenna.getCellGSM() != null && activeAntenna.getCellGSM().isEnabled()) { 
 						
 						if (antennaView.getAntennaModel().getCellGSM() != null && activeAntenna.getCellGSM().getNeighbors().contains(antennaView.getAntennaModel().getCellGSM())) {
 							this.updateCellNeighborActive(antennaView.getAntennaModel().getCellGSM(), true);
@@ -215,7 +215,7 @@ public class AreaView extends JLayeredPane {
 						}
 					}
 					
-					if (activeAntenna.getCellUMTS() != null) {
+					if (activeAntenna.getCellUMTS() != null && activeAntenna.getCellUMTS().isEnabled()) {
 	
 						if (antennaView.getAntennaModel().getCellUMTS() != null && activeAntenna.getCellUMTS().getNeighbors().contains(antennaView.getAntennaModel().getCellUMTS())) {
 							this.updateCellNeighborActive(antennaView.getAntennaModel().getCellUMTS(), true);

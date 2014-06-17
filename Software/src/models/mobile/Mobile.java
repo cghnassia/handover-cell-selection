@@ -171,6 +171,7 @@ public class Mobile implements Runnable {
 			
 			if(this.getService().getType() == Cell.CELLTYPE_GSM && ! this.isGPRS() && ! this.isEDGE()) {
 				this.fireDataChangeEvent(new MobileEvent(this, MobileEvent.MOBILE_DATA_NO));
+				this.setData(false);
 			}
 			else {
 				this.fireDataChangeEvent(new MobileEvent(this, MobileEvent.MOBILE_DATA_OK));
@@ -306,6 +307,9 @@ public class Mobile implements Runnable {
 		
 			if(isUMTSMeasurement) {
 				this.getModuleUMTS().doMeasurements();
+			}
+			else {
+				this.getModuleUMTS().clearMeasurements();
 			}
 		}
 		
@@ -458,8 +462,8 @@ public class Mobile implements Runnable {
 		this.isGSM = isGSM;
 		
 		if(! isGSM) {
-			this.isGPRS = false;
-			this.isEDGE = false;
+			//this.isGPRS = false;
+			//this.isEDGE = false;
 			
 			if(this.getService() != null && this.getService().getType() == Cell.CELLTYPE_GSM) {
 				this.getService().setSelected(false);

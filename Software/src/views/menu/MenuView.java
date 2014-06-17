@@ -375,11 +375,11 @@ public class MenuView extends JPanel {
 			// TODO Auto-generated method stub
 			JList<ComboOption> source = (JList<ComboOption>) e.getSource();
 			//int[] values = source.getSelectedIndices();*/
-			if(source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getListNeighbors()) {
+			if(source == MenuView.this.getMenuAntennaView().getMenuCellGSMView().getListNeighbors() && MenuView.this.getMenuAntennaView().getMenuCellGSMView().getCheckBoxGSM().isSelected()) {
 				MenuControlEvent controlEvent = new MenuControlEvent(MenuView.this, MenuControlEvent.TYPE_GSM_NEIGHBORS);
 				MenuView.this.fireControlListEvent(controlEvent);
 			}
-			else { //source == MenuView.this.getMenuAntennaView().getMenuCellUMTSView().getListNeighbors() 
+			else if (source == MenuView.this.getMenuAntennaView().getMenuCellUMTSView().getListNeighbors() && MenuView.this.getMenuAntennaView().getMenuCellUMTSView().getCheckBoxUMTS().isSelected()) {
 				MenuControlEvent controlEvent = new MenuControlEvent(MenuView.this, MenuControlEvent.TYPE_UMTS_NEIGHBORS);
 				MenuView.this.fireControlListEvent(controlEvent);
 			}

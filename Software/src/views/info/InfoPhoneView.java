@@ -72,7 +72,7 @@ public class InfoPhoneView extends JPanel implements Runnable {
 		panelTop3.add(this.valueInterference);
 		
 		JPanel panelTop4 = new JPanel(new FlowLayout());
-		this.labelRate = new JLabel(" Througput ");
+		this.labelRate = new JLabel(" Throughput ");
 		this.labelRate.setPreferredSize(new Dimension(80, 20));
 		this.barRate = new JProgressBar(0, 2000);
 		this.barRate.setPreferredSize(new Dimension(135, 20));

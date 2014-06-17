@@ -116,6 +116,15 @@ public class MenuController {
 							MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna().getCellGSM().setEnabled(MenuController.this.getMenuView().getMenuAntennaView().getMenuCellGSMView().getCheckBoxGSM().isSelected());
 							MenuController.this.getMenuView().getMenuAntennaView().getMenuCellGSMView().setActivated(MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna().getCellGSM().isEnabled(), true);
 							AreaController.Instance().getAreaView().updateCell(MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna().getCellGSM());
+							AreaController.Instance().getAreaView().updateActiveAntenna(MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna());
+						
+							/*if(MenuController.this.getMenuView().getMenuAntennaView().getMenuCellGSMView().getCheckBoxGSM().isSelected()) {
+								MenuController.this.getMenuView().getMenuAntennaView().getMenuCellGSMView().fillNeighbors(MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna().getCellGSM());
+							}
+							else {
+								MenuController.this.getMenuView().getMenuAntennaView().getMenuCellGSMView().fillNeighbors(null);
+							}*/
+							
 						}
 						break;
 					case MenuControlEvent.TYPE_CHECKBOX_CELL_UMTS:
@@ -123,6 +132,14 @@ public class MenuController {
 							MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna().getCellUMTS().setEnabled(MenuController.this.getMenuView().getMenuAntennaView().getMenuCellUMTSView().getCheckBoxUMTS().isSelected());
 							MenuController.this.getMenuView().getMenuAntennaView().getMenuCellUMTSView().setActivated(MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna().getCellUMTS().isEnabled(), true);
 							AreaController.Instance().getAreaView().updateCell(MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna().getCellUMTS());
+							AreaController.Instance().getAreaView().updateActiveAntenna(MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna());
+							
+							/*if(MenuController.this.getMenuView().getMenuAntennaView().getMenuCellUMTSView().getCheckBoxUMTS().isSelected()) {
+								MenuController.this.getMenuView().getMenuAntennaView().getMenuCellUMTSView().fillNeighbors(MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna().getCellUMTS());
+							}
+							else {
+								MenuController.this.getMenuView().getMenuAntennaView().getMenuCellUMTSView().fillNeighbors(null);
+							}*/
 						}
 						break;
 					case MenuControlEvent.TYPE_CHECKBOX_GSM:
@@ -199,7 +216,6 @@ public class MenuController {
 							cellGSM = MenuController.this.getMenuView().getMenuAntennaView().getModelAntenna().getCellGSM();
 							if(cellGSM != null) {
 								cellGSM.setQSC(value);
-								System.out.println("setQSC at " + value);
 							}
 						}
 						break;

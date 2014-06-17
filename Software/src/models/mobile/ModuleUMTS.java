@@ -98,6 +98,10 @@ public class ModuleUMTS extends Module{
 		}
 	}
 	
+	public void clearMeasurements() {
+		this.measurements.removeAllCellMeasurements();
+	}
+	
 	public void resetActiveSet() {
 		
 		Set<CellUMTS> removedCells = new HashSet<>();
