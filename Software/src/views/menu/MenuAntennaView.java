@@ -209,12 +209,12 @@ public class MenuAntennaView extends JPanel{
 	
 	public void updateGSMReselectOffset(int value) {
 		this.getMenuCellGSMView().getSliderReselectOffset().setValue(value);
-		this.getMenuCellGSMView().getValueReselectOffset().setText(value + " dBm");
+		this.getMenuCellGSMView().getValueReselectOffset().setText(value + " dB");
 	}
 	
 	public void updateGSMReselectHysteresis(int value) {
 		this.getMenuCellGSMView().getSliderReselectHysteresis().setValue(value);
-		this.getMenuCellGSMView().getValueReselectHysteresis().setText(value + " dBm");
+		this.getMenuCellGSMView().getValueReselectHysteresis().setText(value + " dB");
 	}
 	
 	public void updateGSMFrequency(int value) {
@@ -254,12 +254,12 @@ public class MenuAntennaView extends JPanel{
 	
 	public void updateUMTSQualityMin(int value) {
 		this.getMenuCellUMTSView().getSliderQualityMin().setValue(value);
-		this.getMenuCellUMTSView().getValueQualityMin().setText(value + " dBm");
+		this.getMenuCellUMTSView().getValueQualityMin().setText(value + " dB");
 	}
 	
 	public void updateUMTSActiveSetRange(int value) {
 		this.getMenuCellUMTSView().getSliderActiveSetRanges().setValue(value);
-		this.getMenuCellUMTSView().getValueReselectHysteresis().setText(value + " dBm");
+		this.getMenuCellUMTSView().getValueReselectHysteresis().setText(value + " dB");
 	}
 	
 	public void updateUMTSFrequency(int value) {

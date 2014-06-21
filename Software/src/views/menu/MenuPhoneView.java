@@ -107,6 +107,7 @@ public class MenuPhoneView extends JPanel {
 	
 	public void setButtonState(JButton button, int state) {
 		
+
 		if(state == MenuPhoneView.BUTTON_STATE_INACTIVE) {
 			button.setEnabled(false);
 		}
@@ -123,7 +124,7 @@ public class MenuPhoneView extends JPanel {
 			}
 		}
 		else if(button == this.button_call) {
-			if(state == BUTTON_STATE_ON || state == BUTTON_STATE_INACTIVE) {
+			if((state == BUTTON_STATE_ON  && ! Mobile.Instance().isCalling()) || state == BUTTON_STATE_INACTIVE) {
 				button.setIcon(this.imageCallOn);
 			}
 			else {
@@ -131,7 +132,7 @@ public class MenuPhoneView extends JPanel {
 			}
 		}
 		else {
-			if(state == BUTTON_STATE_ON || state == BUTTON_STATE_INACTIVE) {
+			if((state == BUTTON_STATE_ON && ! Mobile.Instance().isData()) || state == BUTTON_STATE_INACTIVE) {	
 				button.setIcon(this.imageDataOn);
 			}
 			else {

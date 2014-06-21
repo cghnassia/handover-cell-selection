@@ -75,11 +75,11 @@ public class MenuCellUMTSView extends JPanel {
 		
 		this.label_qualityMin = new JLabel("Quality min");
 		this.slider_qualityMin = new JSlider(CellUMTS.MIN_QQUAL_MIN, CellUMTS.MAX_QQUAL_MIN, CellUMTS.DEFAULT_QQUAL_MIN);
-		this.value_qualityMin = new JLabel(CellGSM.DEFAULT_RESELECT_OFFSET + " dBm");
+		this.value_qualityMin = new JLabel(CellGSM.DEFAULT_RESELECT_OFFSET + " dB");
 		
 		this.label_activeSetRange = new JLabel("Active range");
 		this.slider_activeSetRange = new JSlider(CellUMTS.MIN_ACTIVESET_RANGE, CellUMTS.MAX_ACTIVESET_RANGE, CellUMTS.DEFAULT_ACTIVESET_RANGE);
-		this.value_activeSetRange = new JLabel(CellUMTS.DEFAULT_ACTIVESET_RANGE + " dBm");
+		this.value_activeSetRange = new JLabel(CellUMTS.DEFAULT_ACTIVESET_RANGE + " dB");
 		
 		ComboOption[] options_frequency = {new ComboOption(900, "900 MHz"), new ComboOption(2100, "2100 MHz")};
 		this.combo_frequency = new JComboBox<>(options_frequency);

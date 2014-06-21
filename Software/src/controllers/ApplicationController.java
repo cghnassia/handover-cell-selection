@@ -195,7 +195,7 @@ public class ApplicationController  {
 					}
 					else { //MobileEvent.MOBILE_DATA_NO)
 						MenuController.Instance().getMenuView().getMenuPhoneView().setButtonState(MenuController.Instance().getMenuView().getMenuPhoneView().getButtonData(), MenuPhoneView.BUTTON_STATE_INACTIVE);
-
+						
 					}
 					
 				}
@@ -205,9 +205,8 @@ public class ApplicationController  {
 					if(e.getID() == MobileEvent.MOBILE_CALL_OK) {
 						MenuController.Instance().getMenuView().getMenuPhoneView().setButtonState(MenuController.Instance().getMenuView().getMenuPhoneView().getButtonCall(), MenuPhoneView.BUTTON_STATE_ON);
 					}
-					else { //MobileEvent.MOBILE_DATA_NO)
+					else { //MobileEvent.MOBILE_CALL_NO)
 						MenuController.Instance().getMenuView().getMenuPhoneView().setButtonState(MenuController.Instance().getMenuView().getMenuPhoneView().getButtonCall(), MenuPhoneView.BUTTON_STATE_INACTIVE);
-
 					}
 					
 				}

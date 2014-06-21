@@ -83,11 +83,11 @@ public class MenuCellGSMView extends JPanel {
 		
 		this.label_reselectOffset = new JLabel("Resel. Offset");
 		this.slider_reselectOffset = new JSlider(CellGSM.MIN_RESELECT_OFFSET, CellGSM.MAX_RESELECT_OFFSET ,CellGSM.DEFAULT_RESELECT_OFFSET);
-		this.value_reselectOffset = new JLabel(CellGSM.DEFAULT_RESELECT_OFFSET + " dBm");
+		this.value_reselectOffset = new JLabel(CellGSM.DEFAULT_RESELECT_OFFSET + " dB");
 		
 		this.label_reselectHysteresis= new JLabel("Hysteresis");
 		this.slider_reselectHysteresis = new JSlider(CellGSM.MIN_RESELECT_HYSTERESIS, CellGSM.MAX_RESELECT_HYSTERESIS, CellGSM.DEFAULT_RESELECT_HYSTERESIS);
-		this.value_reselectHysteresis = new JLabel(CellGSM.DEFAULT_RESELECT_HYSTERESIS + " dBm");
+		this.value_reselectHysteresis = new JLabel(CellGSM.DEFAULT_RESELECT_HYSTERESIS + " dB");
 		
 		ComboOption[] options_frequency = {new ComboOption(900, "900 MHz"), new ComboOption(1800, "1800 MHz")};
 		this.combo_frequency = new JComboBox<>(options_frequency);

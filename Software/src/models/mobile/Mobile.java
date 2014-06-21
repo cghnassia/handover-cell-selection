@@ -128,10 +128,6 @@ public class Mobile implements Runnable {
 		if(this.service == service) {
 			return;
 		}
-		
-		Set<CellGSM> neighborsGSM = new HashSet<>();
-		Set<CellUMTS> neighborsUMTS = new HashSet<>();
-
 		if(service != null) {
 			
 			//If we go from UMTS to GSM, we need to empty active set
@@ -139,27 +135,15 @@ public class Mobile implements Runnable {
 				this.getModuleUMTS().getActiveSet().clear();
 			}
 			
-			//We need to update neighbors
-			if(service.getNeighbors() != null) {
 			
-				for(Cell cell: service.getNeighbors()) {
-		
-					if(cell.getType() == Cell.CELLTYPE_GSM) {
-						neighborsGSM.add((CellGSM) cell); 
-					}
-					else {
-						neighborsUMTS.add((CellUMTS) cell); 
-					}
-				}
-			}
 		}
 		else if (this.getService().getType() == Cell.CELLTYPE_UMTS) {
 			this.getModuleUMTS().getActiveSet().clear();
 		}
 		
 		this.service = service;
-		this.getModuleGSM().setNeighbors(neighborsGSM);
-		this.getModuleUMTS().setNeighbors(neighborsUMTS);
+		this.updateNeighbors();
+		
 		
 		//dispatch events
 		if(this.getService() == null) {
@@ -177,6 +161,30 @@ public class Mobile implements Runnable {
 				this.fireDataChangeEvent(new MobileEvent(this, MobileEvent.MOBILE_DATA_OK));
 			}
 		}
+	}
+	
+	public void updateNeighbors() {
+		
+		
+		Set<CellGSM> neighborsGSM = new HashSet<>();
+		Set<CellUMTS> neighborsUMTS = new HashSet<>();
+
+		
+		if(this.getService() != null && this.getService().getNeighbors() != null) {
+			
+			for(Cell cell: this.getService().getNeighbors()) {
+	
+				if(cell.getType() == Cell.CELLTYPE_GSM) {
+					neighborsGSM.add((CellGSM) cell); 
+				}
+				else {
+					neighborsUMTS.add((CellUMTS) cell); 
+				}
+			}
+		}
+		
+		this.getModuleGSM().setNeighbors(neighborsGSM);
+		this.getModuleUMTS().setNeighbors(neighborsUMTS);
 	}
 	
 	public boolean isPower() {

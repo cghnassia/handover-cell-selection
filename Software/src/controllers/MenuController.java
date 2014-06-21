@@ -293,6 +293,10 @@ public class MenuController {
 					if(cell != null) {
 						cell.setNeighbors(neighbors);
 						AreaController.Instance().getAreaView().updateActiveAntenna(cell.getAntenna());
+						
+						if(Mobile.Instance().getService() != null && Mobile.Instance().getService() == cell) {
+							Mobile.Instance().updateNeighbors();
+						}
 					}
 				}
 			}

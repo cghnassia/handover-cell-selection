@@ -87,9 +87,10 @@ public class ModuleGSM extends Module {
 	@Override
 	public void resetMeasurements() {
 		
+		
 		Set<Cell> removedCells = new HashSet<>();
 		for (CellMeasurement cellMeasurement: this.measurements.getCellMeasurements()) {
-			
+
 			Cell cellGSM = cellMeasurement.getCell();
 			if(cellGSM == this.getMobile().getService()) {
 				continue;
@@ -173,7 +174,7 @@ public class ModuleGSM extends Module {
 						
 						if (cCell == null) {
 							cCell = pCell;
-							cMeasurement = cMeasurement;
+							cMeasurement = pMeasurement;
 						}
 						else if (pCell.getC2Criterion(pMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()), pCell.getAntenna().getLocationArea() == this.getMobile().getService().getAntenna().getLocationArea()) > cCell.getC2Criterion(cMeasurement.getStrengthAverage(this.getMobile().getMeasureCount()), cCell.getAntenna().getLocationArea() == this.getMobile().getService().getAntenna().getLocationArea())) {
 							cCell = pCell;

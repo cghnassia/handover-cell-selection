@@ -131,8 +131,8 @@ public class AreaController implements Runnable {
 				AreaModel areaModel = AreaController.this.getAreaModel();
 				
 				int areaScale = AreaModel.AREA_MAX_SCALE - e.getValue() + AreaModel.AREA_MIN_SCALE;
-				int areaX = (int) ((double) areaModel.getAreaX() + (double) areaModel.getAreaWidth() * (1 - (double) areaScale / (double) areaModel.getAreaScale()));
-				int areaY = (int) ((double) areaModel.getAreaY() + (double) areaModel.getAreaHeight() * (1 - (double) areaScale / (double) areaModel.getAreaScale()));
+				//int areaX = (int) ((double) areaModel.getAreaX() + (double) areaModel.getAreaWidth() * (1 - (double) areaScale / (double) areaModel.getAreaScale()));
+				//int areaY = (int) ((double) areaModel.getAreaY() + (double) areaModel.getAreaHeight() * (1 - (double) areaScale / (double) areaModel.getAreaScale()));
 				
 				//System.out.println("old area X : " + areaModel.getAreaX());
 				//System.out.println("new area X : " + areaX);
@@ -142,8 +142,8 @@ public class AreaController implements Runnable {
 				System.out.println("areaX : before " + areaModel.getAreaX() + " - after " + areaX);*/
 				
 				areaModel.setAreaScale(areaScale);
-				areaModel.setAreaX(areaX);
-				areaModel.setAreaY(areaY);
+				//areaModel.setAreaX(areaX);
+				//areaModel.setAreaY(areaY);
 				
 				AreaController.this.getAreaView().updateScale();
 				
