@@ -1,0 +1,373 @@
+<?xml version="1.0"?>
+<Application>	
+	<Areas>
+		<Area id="1" color="#0000FF">
+			<Antenna id="10" x="5000" y="10000">
+				<Cell id="100" type="GSM" power="38" frequency="900" offset="0">
+					<Neighbors>
+						<Neighbor cell="110" />
+						<Neighbor cell="120" />
+						<Neighbor cell="130" />
+						<Neighbor cell="140" />
+						<Neighbor cell="150" />
+						<Neighbor cell="160" />
+						<Neighbor cell="101" />
+					</Neighbors>
+				</Cell>
+				<Cell id="101" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="100" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+			
+			<Antenna id="11" x="6250" y="7500">
+				<Cell id="110" type="GSM" power="38" frequency="900" offset="1">
+					<Neighbors>
+						<Neighbor cell="100" />
+						<Neighbor cell="120" />
+						<Neighbor cell="160" />
+						<Neighbor cell="350" />
+						<Neighbor cell ="111" />
+					</Neighbors>
+				</Cell>
+				<Cell id="111" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="110" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="12" x="7500" y="10000">
+				<Cell id="120" type="GSM" power="38" frequency="900" offset="2">
+					<Neighbors>
+						<Neighbor cell="100" />
+						<Neighbor cell="110" />
+						<Neighbor cell="130" />
+						<Neighbor cell="260" />
+						<Neighbor cell="340" />
+						<Neighbor cell="350" />
+						<Neighbor cell="121" />
+					</Neighbors>
+				</Cell>
+				<Cell id="121" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="120" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="13" x="6250" y="12500">
+				<Cell id="130" type="GSM" power="38" frequency="900" offset="3">
+					<Neighbors>
+						<Neighbor cell="100" />
+						<Neighbor cell="120" />
+						<Neighbor cell="140" />
+						<Neighbor cell="260" />
+						<Neighbor cell="131" />
+					</Neighbors>
+				</Cell>
+				<Cell id="131" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="130" />
+					</Neighbors>	
+				</Cell>
+			</Antenna>
+
+			<Antenna id="14" x="3750" y="12500">
+				<Cell id="140" type="GSM" power="38" frequency="900" offset="4">
+					<Neighbors>
+						<Neighbor cell="100" />
+						<Neighbor cell="130" />
+						<Neighbor cell="150" />
+						<Neighbor cell="141" />
+					</Neighbors>
+				</Cell>
+				<Cell id="141" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="140" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="15" x="2500" y="10000">
+				<Cell id="150" type="GSM" power="38" frequency="900" offset="5">
+					<Neighbors>
+						<Neighbor cell="100" />
+						<Neighbor cell="140" />
+						<Neighbor cell="160" />
+						<Neighbor cell="151" />
+					</Neighbors>
+				</Cell>
+				<Cell id="151" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="150" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="16" x="3750" y="7500">
+				<Cell id="160" type="GSM" power="38" frequency="900" offset="6">
+					<Neighbors>
+						<Neighbor cell="100" />
+						<Neighbor cell="110" />
+						<Neighbor cell="150" />
+						<Neighbor cell="161" />
+					</Neighbors>
+				</Cell>
+				<Cell id="161" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="160" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+		</Area>
+
+		<Area id="2" color="#00FF00">
+			<Antenna id="20" x="10000" y="15000">
+				<Cell id="200" type="GSM" power="38" frequency="900" offset="0">
+					<Neighbors>
+						<Neighbor cell="210" />
+						<Neighbor cell="220" />
+						<Neighbor cell="230" />
+						<Neighbor cell="240" />
+						<Neighbor cell="250" />
+						<Neighbor cell="260" />
+					</Neighbors>
+				</Cell>
+				<Cell id="201" type="UMTS" power="27" frequency="2100"/>
+			</Antenna>
+			
+			<Antenna id="21" x="11250" y="12500">
+				<Cell id="210" type="GSM" power="38" frequency="900" offset="1">
+					<Neighbors>
+						<Neighbor cell="200" />
+						<Neighbor cell="220" />
+						<Neighbor cell="260" />
+						<Neighbor cell="330" />
+						<Neighbor cell="340" />
+					</Neighbors>
+				</Cell>
+				<Cell id="211" type="UMTS" power="27" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="22" x="12500" y="15000">
+				<Cell id="220" type="GSM" power="38" frequency="900" offset="2">
+					<Neighbors>
+						<Neighbor cell="200" />
+						<Neighbor cell="210" />
+						<Neighbor cell="230" />
+					</Neighbors>
+				</Cell>
+				<Cell id="221" type="UMTS" power="27" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="23" x="11250" y="17500">
+				<Cell id="230" type="GSM" power="38" frequency="900" offset="3">
+					<Neighbors>
+						<Neighbor cell="200" />
+						<Neighbor cell="220" />
+						<Neighbor cell="240" />
+					</Neighbors>
+				</Cell>
+				<Cell id="231" type="UMTS" power="27" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="24" x="8750" y="17500">
+				<Cell id="241" type="GSM" power="38" frequency="900" offset="4">
+					<Neighbors>
+						<Neighbor cell="200" />
+						<Neighbor cell="230" />
+						<Neighbor cell="250" />
+					</Neighbors>
+				</Cell>
+				<Cell id="242" type="UMTS" power="27" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="25" x="7500" y="15000">
+				<Cell id="250" type="GSM" power="38" frequency="900" offset="5">
+					<Neighbors>
+						<Neighbor cell="130" />
+						<Neighbor cell="200" />
+						<Neighbor cell="240" />
+						<Neighbor cell="260" />
+					</Neighbors>
+				</Cell>
+				<Cell id="251" type="UMTS" power="27" frequency="2100"/>
+			</Antenna>
+
+			<Antenna id="26" x="8750" y="12500">
+				<Cell id="260" type="GSM" power="38" frequency="900" offset="6">
+					<Neighbors>
+						<Neighbor cell="120" />
+						<Neighbor cell="130" />
+						<Neighbor cell="200" />
+						<Neighbor cell="210" />
+						<Neighbor cell="250" />
+						<Neighbor cell="340" />
+					</Neighbors>
+				</Cell>
+				<Cell id="261" type="UMTS" power="27" frequency="2100"/>
+			</Antenna>
+		</Area>
+
+		<Area id="3" color="#FF0000">
+			<Antenna id="30" x="11250" y="7500">
+				<Cell id="300" type="GSM" power="38" frequency="900" offset="0">
+					<Neighbors>
+						<Neighbor cell="310" />
+						<Neighbor cell="320" />
+						<Neighbor cell="330" />
+						<Neighbor cell="340" />
+						<Neighbor cell="350" />
+						<Neighbor cell="360" />
+						<Neighbor cell="301" />
+					</Neighbors>
+				</Cell>
+				<Cell id="301" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="300" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+			
+			<Antenna id="31" x="12500" y="5000">
+				<Cell id="310" type="GSM" power="38" frequency="900" offset="1">
+					<Neighbors>
+						<Neighbor cell="300" />
+						<Neighbor cell="320" />
+						<Neighbor cell="360" />
+						<Neighbor cell="311" />
+					</Neighbors>
+				</Cell>
+				<Cell id="311" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="310" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="32" x="13750" y="7500">
+				<Cell id="320" type="GSM" power="38" frequency="900" offset="2">
+					<Neighbors>
+						<Neighbor cell="300" />
+						<Neighbor cell="310" />
+						<Neighbor cell="321" />
+						<Neighbor cell="330" />
+						<Neighbor cell="371" />
+						<Neighbor cell="391" />
+						<Neighbor cell="321" />
+					</Neighbors>
+				</Cell>
+				<Cell id="321" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="320" />
+						<Neighbor cell="371" />
+						<Neighbor cell="391" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="33" x="12500" y="10000">
+				<Cell id="330" type="GSM" power="38" frequency="900" offset="3">
+					<Neighbors>
+						<Neighbor cell="210" />
+						<Neighbor cell="300" />
+						<Neighbor cell="320" />
+						<Neighbor cell="340" />
+						<Neighbor cell="331" />
+					</Neighbors>
+				</Cell>
+				<Cell id="331" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="330" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="34" x="10000" y="10000">
+				<Cell id="340" type="GSM" power="38" frequency="900" offset="4">
+					<Neighbors>
+						<Neighbor cell="120" />
+						<Neighbor cell="210" />
+						<Neighbor cell="260" />
+						<Neighbor cell="300" />
+						<Neighbor cell="330" />
+						<Neighbor cell="350" />
+						<Neighbor cell="341" />
+					</Neighbors>
+				</Cell>
+				<Cell id="341" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="340" />
+						<Neighbor cell="381" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="35" x="8750" y="7500">
+				<Cell id="350" type="GSM" power="38" frequency="900" offset="5">
+					<Neighbors>
+						<Neighbor cell="110" />
+						<Neighbor cell="120" />
+						<Neighbor cell="300" />
+						<Neighbor cell="340" />
+						<Neighbor cell="360" />
+						<Neighbor cell="351" />
+					</Neighbors>
+				</Cell>
+				<Cell id="351" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="350" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="36" x="10000" y="5000">
+				<Cell id="360" type="GSM" power="38" frequency="900" offset="6">
+					<Neighbors>
+						<Neighbor cell="300" />
+						<Neighbor cell="350" />
+						<Neighbor cell="310" />
+						<Neighbor cell="361" />
+					</Neighbors>
+				</Cell>
+				<Cell id="361" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="360" />
+					</Neighbors>
+				</Cell>
+			</Antenna>
+
+			<Antenna id="37" x="15000" y="5600">
+				<Cell id="371" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="381" />
+						<Neighbor cell="391" />
+						<Neighbor cell="320" />
+					</Neighbors>	
+				</Cell>
+			</Antenna>
+
+			<Antenna id="38" x="16550" y="5600">
+				<Cell id="381" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="371" />
+						<Neighbor cell="391" />
+					</Neighbors>	
+				</Cell>
+			</Antenna>
+
+			<Antenna id="39" x="15775" y="7150">
+				<Cell id="391" type="UMTS" power="27" frequency="2100">
+					<Neighbors>
+						<Neighbor cell="371" />
+						<Neighbor cell="381" />
+						<Neighbor cell="320" />
+					</Neighbors>	
+				</Cell>
+			</Antenna>
+
+		</Area>
+	</Areas>
+</Application>
